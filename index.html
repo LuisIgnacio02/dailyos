@@ -309,7 +309,7 @@ function loadState(){
     if(!saved.date||saved.date!==today){
       const prevDate=saved.date||today;
       const prevDow=new Date(prevDate+'T12:00:00').getDay();
-      const prevDone=prevDow===0?true:tier1DoneFor(saved.tier1||{},prevDow);
+      const prevDone=prevDow===0?true:tier1DoneFor(saved.tier1||{},prevDow,(saved.customTasks||[]));
       const nowD=new Date(today+'T12:00:00'),prevD=new Date(prevDate+'T12:00:00');
       const diffD=Math.round((nowD-prevD)/86400000);
       let streak=saved.streak||0;
@@ -347,15 +347,17 @@ function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state))
 // ── DERIVED ──
 function dow(){ return new Date().getDay(); }
 function isRest(){ return dow()===0; }
-function tier1DoneFor(t1,d){
+function tier1DoneFor(t1,d,customTasks){
   const cfg=DAY_CFG[d];
   if(cfg==='rest')return true;
   if(!t1.ifom||!t1.whatsapp)return false;
   if(cfg==='gym'&&!t1.gym)return false;
   if(cfg==='both'&&!t1.gym&&!t1.run)return false;
+  const customs=(customTasks||[]).filter(c=>c.tier===1);
+  if(customs.some(c=>!(t1.custom&&t1.custom[c.id])))return false;
   return true;
 }
-function t1Done(){ return isRest()||tier1DoneFor(state.tier1,dow()); }
+function t1Done(){ return isRest()||tier1DoneFor(state.tier1,dow(),state.customTasks); }
 function timerDone(){ return state.tier2.timerRemaining<=0; }
 function t2Open(){ return isRest()||t1Done(); }
 
@@ -426,10 +428,9 @@ function t1Toggle(f){
 }
 function ctToggle1(id){
   if(!state.tier1.custom)state.tier1.custom={};
-  state.tier1.custom[id]=!state.tier1.custom[id];saveState();
-  const el=document.getElementById('ct1-'+id);
-  const done=!!state.tier1.custom[id];
-  if(el){el.className='check-item'+(done?' done':'');el.querySelector('.check-box').innerHTML=done?chkSvg():'';}
+  state.tier1.custom[id]=!state.tier1.custom[id];
+  saveState();
+  render();
 }
 
 // ── TIER 2/3 TOGGLES ──
