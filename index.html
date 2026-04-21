@@ -4,68 +4,48 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Daily OS · Luis Ignacio Cepeda Morales</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23d97757'/><path d='M7 10l2.5 2.5L14 7' stroke='white' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/><line x1='17' y1='10' x2='26' y2='10' stroke='white' stroke-width='1.8' stroke-linecap='round'/><path d='M7 17l2.5 2.5L14 14' stroke='white' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/><line x1='17' y1='17' x2='24' y2='17' stroke='white' stroke-width='1.8' stroke-linecap='round'/><path d='M7 24l2.5 2.5L14 21' stroke='white' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/><line x1='17' y1='24' x2='21' y2='24' stroke='white' stroke-width='1.8' stroke-linecap='round'/></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --dark:#141413;--light:#faf9f5;--mid-gray:#b0aea5;--lg:#e8e6dc;
-  --orange:#d97757;--blue:#6a9bcc;--green:#788c5d;
   --bg:#f5f3ec;--surface:#faf9f5;--surface-2:#f0ede4;--surface-3:#e8e6dc;
   --t1:#141413;--t2:#3a3935;--t3:#6b6960;--t4:#b0aea5;
   --border:rgba(20,20,19,0.1);--border-h:rgba(20,20,19,0.25);
   --accent:#d97757;--accent-bg:rgba(217,119,87,0.09);--accent-bd:rgba(217,119,87,0.3);
-  --blue-bg:rgba(106,155,204,0.1);--blue-bd:rgba(106,155,204,0.3);
-  --green-bg:rgba(120,140,93,0.1);--green-bd:rgba(120,140,93,0.3);
-  --red-bg:rgba(220,38,38,0.07);--red-bd:rgba(220,38,38,0.2);
+  --blue:#6a9bcc;--blue-bg:rgba(106,155,204,0.1);--blue-bd:rgba(106,155,204,0.3);
+  --green:#788c5d;--green-bg:rgba(120,140,93,0.1);--green-bd:rgba(120,140,93,0.3);
   --mono:'DM Mono','Courier New',monospace;
   --sans:'Poppins',Arial,sans-serif;
   --serif:'Lora',Georgia,serif;
-  --r:10px;--rs:6px;
-  --sh:0 1px 4px rgba(20,20,19,0.07);--shm:0 6px 20px rgba(20,20,19,0.1);
+  --r:10px;--rs:6px;--sh:0 1px 4px rgba(20,20,19,0.07);
 }
 html{scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--t1);font-family:var(--sans);font-size:13px;min-height:100vh;padding-bottom:100px;}
 
 /* HEADER */
-.g-header{
-  background:rgba(250,249,245,0.97);backdrop-filter:blur(16px);
-  border-bottom:1px solid var(--border);padding:0 32px;
-  position:sticky;top:0;z-index:100;
-  display:flex;align-items:stretch;justify-content:space-between;gap:20px;height:64px;
-}
+.g-header{background:rgba(250,249,245,0.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 32px;position:sticky;top:0;z-index:100;display:flex;align-items:stretch;justify-content:space-between;gap:20px;height:64px;}
 .hdr-brand{display:flex;flex-direction:column;justify-content:center;}
 .brand-meta{font-size:9px;color:var(--t4);letter-spacing:0.2em;text-transform:uppercase;}
 .brand-name{font-size:18px;font-weight:700;letter-spacing:-0.02em;color:var(--t1);}
 .hdr-stats{display:flex;}
-.hdr-stat{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:0 22px;border-right:1px solid var(--border);height:100%;
-}
+.hdr-stat{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 22px;border-right:1px solid var(--border);height:100%;}
 .hdr-stat:first-child{border-left:1px solid var(--border);}
 .hdr-stat-n{font-family:var(--serif);font-size:26px;font-weight:600;color:var(--t1);line-height:1;}
 .hdr-stat-l{font-size:9px;color:var(--t3);letter-spacing:0.12em;margin-top:2px;text-transform:uppercase;font-weight:600;}
+.hdr-actions{display:flex;gap:8px;align-items:center;}
 
-/* MAIN */
+/* MAIN GRID */
 .main-content{max-width:1280px;margin:0 auto;padding:28px 24px 40px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;align-items:start;}
 @media(max-width:860px){.main-content{grid-template-columns:1fr;}}
-/* Rest day layout: banner spans full width, tier2/3 split */
-.main-content.rest-layout{grid-template-columns:1fr 1fr 1fr;}
 .main-content.rest-layout .rest-banner{grid-column:1/-1;}
+.heatmap-section{grid-column:1/-1;}
 
 /* TIER CARD */
-.tier-card{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;
-}
+.tier-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;}
 .tier-card.locked-tier{background:var(--surface-2);}
-.tier-header-bar{
-  padding:14px 20px 13px;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;gap:10px;
-}
-.tier-badge{
-  font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
-  padding:3px 10px;border-radius:20px;border:1px solid;white-space:nowrap;
-}
+.tier-header-bar{padding:14px 20px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.tier-badge{font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 10px;border-radius:20px;border:1px solid;white-space:nowrap;}
 .tier-badge.t1{background:var(--accent-bg);border-color:var(--accent-bd);color:var(--accent);}
 .tier-badge.t2{background:var(--blue-bg);border-color:var(--blue-bd);color:#3d6e9e;}
 .tier-badge.t3{background:var(--green-bg);border-color:var(--green-bd);color:#4a5e35;}
@@ -75,124 +55,107 @@ body{background:var(--bg);color:var(--t1);font-family:var(--sans);font-size:13px
 .tier-body{padding:16px 20px;}
 
 /* LOCK NOTICE */
-.lock-notice{
-  display:flex;align-items:flex-start;gap:10px;
-  padding:12px 14px;background:var(--surface-2);
-  border:1px dashed var(--border-h);border-radius:var(--rs);margin-bottom:14px;
-}
+.lock-notice{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:var(--surface-2);border:1px dashed var(--border-h);border-radius:var(--rs);margin-bottom:14px;}
 .lock-notice-icon{font-size:16px;line-height:1.4;flex-shrink:0;}
 .lock-notice-text{font-size:12px;color:var(--t3);line-height:1.5;}
 .lock-notice-text strong{color:var(--t2);font-weight:600;}
 
 /* CHECK ITEMS */
-.check-item{
-  display:flex;align-items:center;gap:11px;
-  padding:10px 13px;border-radius:var(--rs);
-  border:1px solid var(--border);background:var(--surface-2);
-  margin-bottom:8px;transition:background 0.13s,border-color 0.13s,opacity 0.13s;
-  cursor:pointer;user-select:none;
-}
-.check-item:last-child{margin-bottom:0;}
-.check-item:hover:not(.locked){background:var(--surface);border-color:var(--border-h);}
+.check-item{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:var(--rs);border:1px solid var(--border);background:var(--surface-2);margin-bottom:7px;transition:background 0.13s,border-color 0.13s,opacity 0.13s;cursor:pointer;user-select:none;}
+.check-item:hover:not(.locked):not(.editing){background:var(--surface);border-color:var(--border-h);}
 .check-item.done{border-color:var(--green-bd);background:var(--green-bg);}
-.check-item.locked{opacity:0.48;pointer-events:none;}
-.check-box{
-  width:17px;height:17px;border-radius:4px;border:1.5px solid var(--border-h);
-  background:var(--surface);flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;transition:all 0.13s;
-}
+.check-item.locked{opacity:0.45;pointer-events:none;}
+.check-item.editing{cursor:default;background:var(--surface);border-color:var(--accent-bd);}
+.check-box{width:17px;height:17px;border-radius:4px;border:1.5px solid var(--border-h);background:var(--surface);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.13s;}
 .check-item.done .check-box{background:var(--green);border-color:var(--green);}
 .check-label{flex:1;font-size:13px;font-weight:500;color:var(--t2);line-height:1.3;}
 .check-item.done .check-label{color:var(--t3);}
 .check-lock{font-size:12px;color:var(--t4);}
+/* Action buttons shown on hover */
+.check-item .item-actions{display:flex;gap:4px;opacity:0;transition:opacity 0.13s;flex-shrink:0;}
+.check-item:hover:not(.locked):not(.editing) .item-actions{opacity:1;}
 
-/* GYM/RUN ROW */
-.gr-row{display:flex;gap:8px;margin-bottom:8px;}
+/* GYM/RUN */
+.gr-row{display:flex;gap:8px;margin-bottom:7px;}
 .gr-row .check-item{flex:1;margin-bottom:0;}
-.gr-hint{font-size:10px;color:var(--t4);margin:-2px 0 8px 2px;}
+.gr-hint{font-size:10px;color:var(--t4);margin:-2px 0 7px 2px;}
 
 /* IFOM SCORE */
-.ifom-score-row{
-  display:flex;align-items:center;gap:10px;
-  padding:6px 13px 11px 40px;margin-top:-6px;margin-bottom:8px;
-}
+.ifom-score-row{display:flex;align-items:center;gap:10px;padding:6px 11px 10px 38px;margin-top:-5px;margin-bottom:7px;}
 .ifom-score-label{font-size:11px;color:var(--t3);font-weight:500;white-space:nowrap;}
-.ifom-score-input{
-  width:78px!important;padding:5px 8px!important;
-  font-size:13px!important;font-family:var(--mono)!important;font-weight:500!important;
-  background:var(--surface)!important;border:1px solid var(--border)!important;
-  border-radius:var(--rs)!important;color:var(--t1)!important;
-  outline:none!important;transition:border-color 0.13s!important;
-}
+.ifom-score-input{width:78px!important;padding:5px 8px!important;font-size:13px!important;font-family:var(--mono)!important;font-weight:500!important;background:var(--surface)!important;border:1px solid var(--border)!important;border-radius:var(--rs)!important;color:var(--t1)!important;outline:none!important;transition:border-color 0.13s!important;}
 .ifom-score-input:focus{border-color:var(--accent-bd)!important;}
 .ifom-score-pct{font-size:12px;color:var(--t3);}
 
+/* INLINE TEXT INPUT (edit / add) */
+.inline-input{flex:1;padding:4px 8px;font-size:12px;font-family:var(--sans);background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);color:var(--t1);outline:none;transition:border-color 0.13s;min-width:0;}
+.inline-input:focus{border-color:var(--accent-bd);}
+
 /* SUCCESS NOTICE */
-.success-notice{
-  display:flex;align-items:center;gap:10px;
-  padding:11px 14px;background:var(--green-bg);
-  border:1px solid var(--green-bd);border-radius:var(--rs);
-  margin-top:14px;animation:fadeSlide 0.3s ease;
-}
+.success-notice{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--green-bg);border:1px solid var(--green-bd);border-radius:var(--rs);margin-top:14px;animation:fadeSlide 0.3s ease;}
 .success-notice-text{font-size:12px;font-weight:600;color:#4a5e35;}
 
 /* TIMER */
 .timer-section{margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
 .timer-label{font-size:9px;color:var(--t3);letter-spacing:0.12em;text-transform:uppercase;font-weight:600;margin-bottom:10px;}
 .timer-row{display:flex;align-items:center;gap:18px;}
-.timer-clock{
-  font-family:var(--mono);font-size:44px;font-weight:300;
-  letter-spacing:-0.03em;color:var(--t2);line-height:1;min-width:126px;
-  transition:color 0.3s;
-}
+.timer-clock{font-family:var(--mono);font-size:44px;font-weight:300;letter-spacing:-0.03em;color:var(--t2);line-height:1;min-width:126px;transition:color 0.3s;}
 .timer-clock.running{color:var(--accent);}
 .timer-clock.done{color:var(--green);}
-.timer-btns{display:flex;gap:8px;align-items:center;}
 
 /* BUTTONS */
 .btn{border-radius:var(--rs);padding:7px 15px;font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;letter-spacing:0.04em;transition:all 0.13s;border:1px solid;}
-.btn-p{background:var(--accent);border-color:var(--accent);color:var(--light);}
+.btn-p{background:var(--accent);border-color:var(--accent);color:#faf9f5;}
 .btn-p:hover{background:#c96a4a;border-color:#c96a4a;}
 .btn-g{background:transparent;border-color:var(--border);color:var(--t3);}
 .btn-g:hover{border-color:var(--border-h);color:var(--t2);background:var(--surface-2);}
+.ibtn{background:transparent;border:1px solid var(--border);color:var(--t3);border-radius:4px;padding:3px 7px;font-size:11px;font-weight:500;cursor:pointer;transition:all 0.13s;font-family:var(--sans);line-height:1.3;flex-shrink:0;}
+.ibtn:hover{border-color:var(--border-h);color:var(--t2);background:var(--surface-2);}
+.ibtn-r{border-color:rgba(220,38,38,0.2);color:rgba(220,38,38,0.5);}
+.ibtn-r:hover{border-color:rgba(220,38,38,0.5);color:#dc2626;background:rgba(220,38,38,0.04);}
+.ibtn-g{border-color:var(--green-bd);color:var(--green);}
+.ibtn-g:hover{border-color:var(--green);background:var(--green-bg);}
+
+/* ADD TASK ROW */
+.add-task-row{display:flex;gap:7px;align-items:center;padding-top:10px;margin-top:8px;border-top:1px solid var(--border);}
+.add-task-hint{padding-top:10px;margin-top:6px;border-top:1px solid var(--border);}
 
 /* REST DAY */
-.rest-banner{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:var(--r);padding:36px 28px;text-align:center;box-shadow:var(--sh);
-}
+.rest-banner{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:36px 28px;text-align:center;box-shadow:var(--sh);}
 .rest-banner-title{font-family:var(--serif);font-size:26px;font-weight:600;color:var(--t1);margin-bottom:6px;}
 .rest-banner-sub{font-size:13px;color:var(--t3);}
 
+/* HEATMAP */
+.hm-outer{overflow-x:auto;padding-bottom:4px;}
+.hm-grid{display:flex;flex-direction:column;gap:4px;min-width:max-content;}
+.hm-row{display:flex;align-items:center;gap:3px;}
+.hm-label{width:160px;min-width:160px;font-size:11px;color:var(--t3);text-align:right;padding-right:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hm-cell{width:18px;height:18px;border-radius:3px;background:var(--surface-3);flex-shrink:0;transition:background 0.13s;}
+.hm-cell.hm-done{background:var(--green);}
+.hm-cell.hm-today{box-shadow:0 0 0 2px var(--accent);}
+.hm-cell.hm-done.hm-today{background:var(--green);box-shadow:0 0 0 2px var(--accent);}
+.hm-date-cell{width:18px;flex-shrink:0;font-size:8px;color:var(--t4);text-align:center;line-height:1.2;font-family:var(--mono);}
+.hm-legend{display:flex;align-items:center;gap:20px;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);}
+.hm-legend-item{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--t3);}
+.hm-legend-cell{width:12px;height:12px;border-radius:2px;flex-shrink:0;}
+
 /* BOTTOM BAR */
-.bottom-bar{
-  position:fixed;bottom:0;left:0;right:0;height:90px;
-  background:rgba(250,249,245,0.98);backdrop-filter:blur(16px);
-  border-top:1px solid var(--border);
-  display:flex;align-items:center;padding:0 32px;gap:0;z-index:100;
-}
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;height:90px;background:rgba(250,249,245,0.98);backdrop-filter:blur(16px);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 32px;z-index:100;}
 .sparkline-wrap{display:flex;flex-direction:column;gap:5px;padding-right:28px;}
 .sparkline-label{font-size:9px;color:var(--t4);letter-spacing:0.15em;text-transform:uppercase;font-weight:600;}
 #sparklineCanvas{display:block;}
 .bar-divider{width:1px;height:44px;background:var(--border);flex-shrink:0;margin-right:28px;}
-.cd-group{display:flex;gap:0;flex:1;justify-content:space-around;align-items:center;}
-.cditem{
-  display:flex;flex-direction:column;align-items:center;gap:1px;
-  padding:0 20px;border-right:1px solid var(--border);
-}
+.cd-group{display:flex;flex:1;justify-content:space-around;align-items:center;}
+.cditem{display:flex;flex-direction:column;align-items:center;gap:1px;padding:0 20px;border-right:1px solid var(--border);}
 .cditem:last-child{border-right:none;}
 .cd-days{font-family:var(--serif);font-size:26px;font-weight:600;color:var(--t1);line-height:1;}
 .cd-label{font-size:9px;color:var(--t3);letter-spacing:0.1em;text-transform:uppercase;font-weight:600;margin-top:2px;}
 .cd-date{font-size:9px;color:var(--t4);}
 
-/* Unlock animation */
 @keyframes fadeSlide{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 @keyframes unlockPop{from{opacity:0;transform:scale(0.985)}to{opacity:1;transform:scale(1)}}
 .unlock-pop{animation:unlockPop 0.22s ease;}
-
-/* No spinner on number input */
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;}
 input[type=number]{-moz-appearance:textfield;}
 </style>
 </head>
@@ -209,6 +172,9 @@ input[type=number]{-moz-appearance:textfield;}
       <div class="hdr-stat-l">Day Streak</div>
     </div>
   </div>
+  <div class="hdr-actions">
+    <button class="btn btn-g" onclick="exportJSON()" style="font-size:10px;padding:5px 14px;height:34px;">⬇ Export</button>
+  </div>
 </header>
 
 <main class="main-content" id="mainContent"></main>
@@ -220,64 +186,62 @@ input[type=number]{-moz-appearance:textfield;}
   </div>
   <div class="bar-divider"></div>
   <div class="cd-group">
-    <div class="cditem">
-      <div class="cd-days" id="cdRace">--</div>
-      <div class="cd-label">10K Race</div>
-      <div class="cd-date">May 30, 2026</div>
-    </div>
-    <div class="cditem">
-      <div class="cd-days" id="cdIFOM">--</div>
-      <div class="cd-label">IFOM CSE</div>
-      <div class="cd-date">Jun 29, 2026</div>
-    </div>
-    <div class="cditem">
-      <div class="cd-days" id="cdGrad">--</div>
-      <div class="cd-label">Graduation</div>
-      <div class="cd-date">Jul 1, 2026</div>
-    </div>
+    <div class="cditem"><div class="cd-days" id="cdRace">--</div><div class="cd-label">10K Race</div><div class="cd-date">May 30, 2026</div></div>
+    <div class="cditem"><div class="cd-days" id="cdIFOM">--</div><div class="cd-label">IFOM CSE</div><div class="cd-date">Jun 29, 2026</div></div>
+    <div class="cditem"><div class="cd-days" id="cdGrad">--</div><div class="cd-label">Graduation</div><div class="cd-date">Jul 1, 2026</div></div>
   </div>
 </footer>
 
 <script>
-// ====== CONSTANTS ======
-const STORAGE_KEY = 'licm_daily_os_v3';
-const TIMER_FULL = 3600; // 60 min in seconds
-const DAYS_FULL  = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-const MONTHS     = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-const TARGETS    = {
-  race: new Date('2026-05-30T00:00:00'),
-  ifom: new Date('2026-06-29T00:00:00'),
-  grad: new Date('2026-07-01T00:00:00')
-};
-// 0=Sun(rest) 1=Mon(gym) 2=Tue(gym) 3=Wed(gym|run) 4=Thu(gym) 5=Fri(gym|run) 6=Sat(gym|run)
-const DAY_CFG = {
-  0:'rest', 1:'gym', 2:'gym', 3:'both', 4:'gym', 5:'both', 6:'both'
-};
+// ── CONSTANTS ──
+const STORAGE_KEY = 'licm_daily_os_v5';
+const TIMER_FULL  = 3600;
+const DAYS_FULL   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONTHS      = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const TARGETS     = { race:new Date('2026-05-30T00:00:00'), ifom:new Date('2026-06-29T00:00:00'), grad:new Date('2026-07-01T00:00:00') };
+const DAY_CFG     = { 0:'rest',1:'gym',2:'gym',3:'both',4:'gym',5:'both',6:'both' };
 
-// ====== STATE ======
-let state = null;
-let timerIv = null;
+// Default task lists (used for initialization only)
+const T2_DEFAULTS = [
+  {key:'nonmed',  label:'Non-medical reading'},
+  {key:'research',label:'Research advancement'},
+  {key:'intl',    label:'Intl. applications'},
+  {key:'lang',    label:'Language practice'}
+];
+const T3_DEFAULTS = [
+  {key:'tv',  label:'TV / YouTube / passive content'},
+  {key:'doom',label:'Doomscrolling'}
+];
+
+// ── STATE ──
+let state       = null;
+let timerIv     = null;
 let midnightTmr = null;
-let _tier3WasLocked = true; // for pop animation
+let addTaskTier = null;   // null | 1 | 2 | 3
+let editTask    = null;   // null | { tier: 2|3, key: string }
 
 function defaultDayState() {
   return {
-    tier1:{ ifom:false, ifomScore:'', gym:false, run:false, whatsapp:false },
-    tier2:{ nonmed:false, research:false, intl:false, lang:false,
-            timerRunning:false, timerRemaining:TIMER_FULL, timerEnd:null },
-    tier3:{ tv:false, doom:false }
+    tier1:{ ifom:false, ifomScore:'', gym:false, run:false, whatsapp:false, custom:{} },
+    tier2:{ custom:{}, timerRunning:false, timerRemaining:TIMER_FULL, timerEnd:null },
+    tier3:{ custom:{} }
   };
 }
 function defaultState() {
-  return { date:todayStr(), ...defaultDayState(), streak:0, history:{} };
+  return {
+    date: todayStr(),
+    ...defaultDayState(),
+    streak: 0,
+    history: {},
+    customTasks: [],      // tier-1 custom tasks only
+    tier2Tasks: T2_DEFAULTS.map(t=>({...t})),
+    tier3Tasks: T3_DEFAULTS.map(t=>({...t}))
+  };
 }
-function todayStr() {
-  const d=new Date();
-  return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;
-}
+function todayStr(){ const d=new Date(); return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`; }
 function p2(n){ return String(n).padStart(2,'0'); }
 
-// ====== LOAD / SAVE ======
+// ── LOAD / SAVE ──
 function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -286,476 +250,470 @@ function loadState() {
     const today = todayStr();
 
     if (!saved.date || saved.date !== today) {
-      // New day - evaluate previous day
+      // ── New day: snapshot yesterday, compute streak ──
       const prevDate = saved.date || today;
-      const prevDow  = new Date(prevDate + 'T12:00:00').getDay();
-      const prevDone = prevDow === 0 ? true : tier1DoneFor(saved.tier1 || {}, prevDow);
+      const prevDow  = new Date(prevDate+'T12:00:00').getDay();
+      const prevDone = prevDow===0 ? true : tier1DoneFor(saved.tier1||{}, prevDow);
 
-      // Streak logic
-      const nowD  = new Date(today + 'T12:00:00');
-      const prevD = new Date(prevDate + 'T12:00:00');
-      const diffD = Math.round((nowD - prevD) / 86400000);
-      let streak  = saved.streak || 0;
-      if (diffD === 1) { streak = prevDone ? streak + 1 : 0; }
-      else             { streak = 0; }
+      const nowD=new Date(today+'T12:00:00'), prevD=new Date(prevDate+'T12:00:00');
+      const diffD=Math.round((nowD-prevD)/86400000);
+      let streak = saved.streak||0;
+      streak = diffD===1 ? (prevDone ? streak+1 : 0) : 0;
 
-      // Persist history entry
-      const history = saved.history || {};
-      const prevScore = saved.tier1 && saved.tier1.ifomScore !== '' ? parseFloat(saved.tier1.ifomScore) : null;
-      history[prevDate] = { completed: prevDone, ifomScore: prevScore };
-
-      // Prune old history (keep 60 days)
-      const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 60);
-      Object.keys(history).forEach(k => {
-        if (new Date(k + 'T12:00:00') < cutoff) delete history[k];
+      // Snapshot tier2 completions for heatmap
+      const t2snap={};
+      const t2tasks = saved.tier2Tasks || T2_DEFAULTS;
+      t2tasks.forEach(t => {
+        t2snap[t.key] = t.key in (saved.tier2||{})
+          ? !!saved.tier2[t.key]
+          : !!(saved.tier2&&saved.tier2.custom&&saved.tier2.custom[t.key]);
       });
 
-      state = { date: today, ...defaultDayState(), streak, history };
+      const history = saved.history||{};
+      history[prevDate] = {
+        completed: prevDone,
+        ifomScore: (saved.tier1&&saved.tier1.ifomScore!=='') ? parseFloat(saved.tier1.ifomScore) : null,
+        tier2: t2snap
+      };
+
+      const cutoff=new Date(); cutoff.setDate(cutoff.getDate()-90);
+      Object.keys(history).forEach(k=>{ if(new Date(k+'T12:00:00')<cutoff) delete history[k]; });
+
+      state = {
+        date: today,
+        ...defaultDayState(),
+        streak, history,
+        customTasks: (saved.customTasks||[]).filter(c=>c.tier===1),
+        tier2Tasks:  saved.tier2Tasks || T2_DEFAULTS.map(t=>({...t})),
+        tier3Tasks:  saved.tier3Tasks || T3_DEFAULTS.map(t=>({...t}))
+      };
     } else {
+      // ── Same day: restore ──
       state = { ...defaultState(), ...saved };
-      state.history = state.history || {};
-      // Restore timer: if running, compute remaining from end timestamp
+      state.history     = state.history     || {};
+      state.customTasks = (state.customTasks||[]).filter(c=>c.tier===1);
+      state.tier2Tasks  = state.tier2Tasks  || T2_DEFAULTS.map(t=>({...t}));
+      state.tier3Tasks  = state.tier3Tasks  || T3_DEFAULTS.map(t=>({...t}));
+      if (!state.tier1.custom) state.tier1.custom = {};
+      if (!state.tier2.custom) state.tier2.custom = {};
+      if (!state.tier3.custom) state.tier3.custom = {};
+
+      // Resume timer
       if (state.tier2.timerRunning && state.tier2.timerEnd) {
-        const remaining = Math.max(0, Math.floor((state.tier2.timerEnd - Date.now()) / 1000));
-        state.tier2.timerRemaining = remaining;
-        if (remaining <= 0) {
-          state.tier2.timerRunning = false;
-          state.tier2.timerRemaining = 0;
-          state.tier2.timerEnd = null;
-        }
+        const rem = Math.max(0, Math.floor((state.tier2.timerEnd-Date.now())/1000));
+        state.tier2.timerRemaining = rem;
+        if (rem<=0) { state.tier2.timerRunning=false; state.tier2.timerRemaining=0; state.tier2.timerEnd=null; }
       }
     }
-  } catch(e) {
-    console.error('loadState error', e);
-    state = defaultState();
-  }
+  } catch(e) { console.error('loadState',e); state=defaultState(); }
 }
+function saveState(){ try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){console.error(e);} }
 
-function saveState() {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
-  catch(e){ console.error('saveState error', e); }
-}
-
-// ====== DERIVED ======
-function dow()         { return new Date().getDay(); }
-function isRest()      { return dow() === 0; }
-function tier1DoneFor(t1, d) {
-  const cfg = DAY_CFG[d];
-  if (cfg === 'rest') return true;
-  if (!t1.ifom || !t1.whatsapp) return false;
-  if (cfg === 'gym'  && !t1.gym) return false;
-  if (cfg === 'both' && !t1.gym && !t1.run) return false;
+// ── DERIVED ──
+function dow(){ return new Date().getDay(); }
+function isRest(){ return dow()===0; }
+function tier1DoneFor(t1,d){
+  const cfg=DAY_CFG[d];
+  if(cfg==='rest') return true;
+  if(!t1.ifom||!t1.whatsapp) return false;
+  if(cfg==='gym'&&!t1.gym) return false;
+  if(cfg==='both'&&!t1.gym&&!t1.run) return false;
   return true;
 }
-function t1Done()   { return isRest() || tier1DoneFor(state.tier1, dow()); }
-function timerDone(){ return state.tier2.timerRemaining <= 0; }
-function t2Open()   { return isRest() || t1Done(); }
-function t3Open()   { return isRest() || timerDone(); }
+function t1Done(){ return isRest()||tier1DoneFor(state.tier1,dow()); }
+function timerDone(){ return state.tier2.timerRemaining<=0; }
+function t2Open(){ return isRest()||t1Done(); }
+function t3Open(){ return isRest()||timerDone(); }
 
-// ====== TIMER ======
-function startTimer() {
-  if (state.tier2.timerRunning || state.tier2.timerRemaining <= 0) return;
-  state.tier2.timerRunning = true;
-  state.tier2.timerEnd = Date.now() + state.tier2.timerRemaining * 1000;
-  saveState();
-  runTimerIv();
-  render();
+// Helper: get done value for a task by tier
+function getTaskDone(key, tier) {
+  const obj = tier===2 ? state.tier2 : state.tier3;
+  // Built-in keys sit directly on the tier object; custom keys under .custom
+  if (key in obj && typeof obj[key]==='boolean') return obj[key];
+  return !!(obj.custom && obj.custom[key]);
 }
-function pauseTimer() {
-  if (!state.tier2.timerRunning) return;
-  state.tier2.timerRemaining = Math.max(0, Math.floor((state.tier2.timerEnd - Date.now()) / 1000));
-  state.tier2.timerRunning = false;
-  state.tier2.timerEnd = null;
-  if (timerIv) { clearInterval(timerIv); timerIv = null; }
-  saveState();
-  render();
-}
-function runTimerIv() {
-  if (timerIv) clearInterval(timerIv);
-  timerIv = setInterval(() => {
-    if (!state.tier2.timerRunning) { clearInterval(timerIv); timerIv = null; return; }
-    const rem = Math.max(0, Math.floor((state.tier2.timerEnd - Date.now()) / 1000));
-    state.tier2.timerRemaining = rem;
-    updateTimerEl();
-    if (rem <= 0) {
-      state.tier2.timerRunning = false;
-      state.tier2.timerRemaining = 0;
-      state.tier2.timerEnd = null;
-      clearInterval(timerIv); timerIv = null;
-      saveState();
-      render();
-    }
-  }, 1000);
-}
-function fmtTime(s) {
-  return `${p2(Math.floor(s/60))}:${p2(s%60)}`;
-}
-function updateTimerEl() {
-  const el = document.getElementById('timerClock');
-  if (!el) return;
-  el.textContent = fmtTime(state.tier2.timerRemaining);
-  el.className = 'timer-clock' + (state.tier2.timerRunning ? ' running' : '') + (state.tier2.timerRemaining===0 ? ' done' : '');
-  const sb = document.getElementById('t2StartBtn');
-  const pb = document.getElementById('t2PauseBtn');
-  if (sb && pb) {
-    if (state.tier2.timerRemaining <= 0) { sb.style.display='none'; pb.style.display='none'; }
-    else if (state.tier2.timerRunning)   { sb.style.display='none'; pb.style.display=''; }
-    else                                  { sb.style.display=''; pb.style.display='none'; }
-  }
+function setTaskDone(key, tier, val) {
+  const obj = tier===2 ? state.tier2 : state.tier3;
+  if (key in obj && typeof obj[key]==='boolean') { obj[key]=val; return; }
+  if (!obj.custom) obj.custom={};
+  obj.custom[key]=val;
 }
 
-// ====== TOGGLE ACTIONS ======
-function t1Toggle(f) {
-  state.tier1[f] = !state.tier1[f];
-  if (f === 'ifom' && !state.tier1.ifom) state.tier1.ifomScore = '';
+// ── TIMER ──
+function startTimer(){
+  if(state.tier2.timerRunning||state.tier2.timerRemaining<=0) return;
+  state.tier2.timerRunning=true;
+  state.tier2.timerEnd=Date.now()+state.tier2.timerRemaining*1000;
+  saveState(); runTimerIv(); render();
+}
+function pauseTimer(){
+  if(!state.tier2.timerRunning) return;
+  state.tier2.timerRemaining=Math.max(0,Math.floor((state.tier2.timerEnd-Date.now())/1000));
+  state.tier2.timerRunning=false; state.tier2.timerEnd=null;
+  if(timerIv){clearInterval(timerIv);timerIv=null;}
   saveState(); render();
 }
-function t2Toggle(f) {
-  if (!t2Open()) return;
-  state.tier2[f] = !state.tier2[f];
-  saveState();
-  // Lightweight update for checkbox only
-  const el = document.getElementById('t2-'+f);
-  if (el) el.className = 'check-item' + (state.tier2[f] ? ' done' : '');
-}
-function t3Toggle(f) {
-  if (!t3Open()) return;
-  state.tier3[f] = !state.tier3[f];
-  saveState();
-  const el = document.getElementById('t3-'+f);
-  if (el) el.className = 'check-item' + (state.tier3[f] ? ' done' : '');
-}
-function setIfomScore(val) {
-  state.tier1.ifomScore = val;
-  saveState();
-  drawSparkline();
-}
-
-// ====== SPARKLINE ======
-function drawSparkline() {
-  const c = document.getElementById('sparklineCanvas');
-  if (!c) return;
-  const ctx = c.getContext('2d');
-  const W = c.width, H = c.height;
-  ctx.clearRect(0, 0, W, H);
-
-  // Build 14-day score array
-  const pts = [];
-  for (let i = 13; i >= 1; i--) {
-    const d = new Date(); d.setDate(d.getDate() - i);
-    const ds = `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;
-    const h = state.history[ds];
-    pts.push({ d: ds, v: (h && h.ifomScore != null) ? h.ifomScore : null });
-  }
-  // Today
-  const todayScore = state.tier1.ifomScore !== '' ? parseFloat(state.tier1.ifomScore) : null;
-  pts.push({ d: todayStr(), v: todayScore });
-
-  const valid = pts.filter(p => p.v !== null);
-  if (valid.length === 0) {
-    ctx.font = '10px Poppins,sans-serif';
-    ctx.fillStyle = '#b0aea5';
-    ctx.fillText('No IFOM scores yet', 6, H/2 + 4);
-    return;
-  }
-
-  const pad = { t:6, b:6, l:5, r:5 };
-  const cW = W - pad.l - pad.r;
-  const cH = H - pad.t - pad.b;
-  const vals = valid.map(p => p.v);
-  let mn = Math.min(...vals), mx = Math.max(...vals);
-  if (mn === mx) { mn = Math.max(0, mn-5); mx = Math.min(100, mx+5); }
-  const rng = mx - mn || 1;
-  const xOf = i => pad.l + (i / (pts.length - 1)) * cW;
-  const yOf = v => pad.t + cH - ((v - mn) / rng) * cH;
-
-  // Area fill
-  const firstV = valid[0];
-  const firstI = pts.indexOf(firstV);
-  const lastV  = valid[valid.length - 1];
-  const lastI  = pts.indexOf(lastV);
-
-  // Area under line
-  ctx.beginPath();
-  let started = false;
-  for (let i = 0; i < pts.length; i++) {
-    if (pts[i].v === null) { started = false; continue; }
-    const x = xOf(i), y = yOf(pts[i].v);
-    if (!started) { ctx.moveTo(x, y); started = true; }
-    else ctx.lineTo(x, y);
-  }
-  // Close area
-  const lx = xOf(lastI);
-  ctx.lineTo(lx, pad.t + cH);
-  ctx.lineTo(xOf(firstI), pad.t + cH);
-  ctx.closePath();
-  const grad = ctx.createLinearGradient(0, pad.t, 0, pad.t + cH);
-  grad.addColorStop(0, 'rgba(106,155,204,0.18)');
-  grad.addColorStop(1, 'rgba(106,155,204,0.0)');
-  ctx.fillStyle = grad;
-  ctx.fill();
-
-  // Line
-  ctx.beginPath();
-  started = false;
-  for (let i = 0; i < pts.length; i++) {
-    if (pts[i].v === null) { started = false; continue; }
-    const x = xOf(i), y = yOf(pts[i].v);
-    if (!started) { ctx.moveTo(x, y); started = true; }
-    else ctx.lineTo(x, y);
-  }
-  ctx.strokeStyle = '#6a9bcc';
-  ctx.lineWidth = 1.6;
-  ctx.lineJoin = 'round';
-  ctx.stroke();
-
-  // Dots
-  valid.forEach(p => {
-    const i = pts.indexOf(p);
-    const isLast = p === lastV;
-    const x = xOf(i), y = yOf(p.v);
-    ctx.beginPath();
-    ctx.arc(x, y, isLast ? 4 : 2.5, 0, Math.PI * 2);
-    ctx.fillStyle = isLast ? '#d97757' : '#6a9bcc';
-    ctx.fill();
-    if (isLast) {
-      ctx.strokeStyle = '#faf9f5';
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-      // Score label
-      ctx.font = `bold 9px 'DM Mono',monospace`;
-      ctx.fillStyle = '#d97757';
-      const label = `${Math.round(p.v)}%`;
-      const lw = ctx.measureText(label).width;
-      const lx = Math.min(x - lw/2, W - pad.r - lw);
-      const ly = y > pad.t + 12 ? y - 7 : y + 14;
-      ctx.fillText(label, lx, ly);
+function runTimerIv(){
+  if(timerIv) clearInterval(timerIv);
+  timerIv=setInterval(()=>{
+    if(!state.tier2.timerRunning){clearInterval(timerIv);timerIv=null;return;}
+    const rem=Math.max(0,Math.floor((state.tier2.timerEnd-Date.now())/1000));
+    state.tier2.timerRemaining=rem; updateTimerEl();
+    if(rem<=0){
+      state.tier2.timerRunning=false;state.tier2.timerRemaining=0;state.tier2.timerEnd=null;
+      clearInterval(timerIv);timerIv=null; saveState(); render();
     }
-  });
+  },1000);
+}
+function fmtTime(s){ return `${p2(Math.floor(s/60))}:${p2(s%60)}`; }
+function updateTimerEl(){
+  const el=document.getElementById('timerClock');
+  const sb=document.getElementById('t2StartBtn');
+  const pb=document.getElementById('t2PauseBtn');
+  if(!el) return;
+  el.textContent=fmtTime(state.tier2.timerRemaining);
+  el.className='timer-clock'+(state.tier2.timerRunning?' running':'')+(state.tier2.timerRemaining===0?' done':'');
+  if(sb&&pb){
+    if(state.tier2.timerRemaining<=0){sb.style.display='none';pb.style.display='none';}
+    else if(state.tier2.timerRunning){sb.style.display='none';pb.style.display='';}
+    else{sb.style.display='';pb.style.display='none';}
+  }
 }
 
-// ====== COUNTDOWNS ======
-function updateCountdowns() {
-  const now = new Date(); now.setHours(0,0,0,0);
-  const pairs = [
-    ['cdRace', TARGETS.race],
-    ['cdIFOM', TARGETS.ifom],
-    ['cdGrad', TARGETS.grad]
-  ];
-  pairs.forEach(([id, target]) => {
-    const t = new Date(target); t.setHours(0,0,0,0);
-    const diff = Math.ceil((t - now) / 86400000);
-    const el = document.getElementById(id);
-    if (el) el.textContent = Math.max(0, diff);
-  });
+// ── TIER 1 TOGGLES ──
+function t1Toggle(f){
+  state.tier1[f]=!state.tier1[f];
+  if(f==='ifom'&&!state.tier1.ifom) state.tier1.ifomScore='';
+  saveState(); render();
+}
+function ctToggle1(id){
+  if(!state.tier1.custom) state.tier1.custom={};
+  state.tier1.custom[id]=!state.tier1.custom[id]; saveState();
+  const el=document.getElementById('ct1-'+id);
+  const done=!!state.tier1.custom[id];
+  if(el){el.className='check-item'+(done?' done':'');el.querySelector('.check-box').innerHTML=done?chkSvg():'';}
 }
 
-// ====== RENDER ======
-function render() {
-  const today = new Date();
-  const d = dow();
-  document.getElementById('dateDisplay').textContent =
-    `${DAYS_FULL[d]}, ${MONTHS[today.getMonth()]} ${today.getDate()}`;
+// ── TIER 2 / 3 TOGGLE ──
+function tierToggle(tier, key){
+  const open = tier===2 ? t2Open() : t3Open();
+  if(!open) return;
+  const val = !getTaskDone(key, tier);
+  setTaskDone(key, tier, val); saveState();
+  const el=document.getElementById('tk-'+key);
+  if(el){el.className='check-item'+(val?' done':'');el.querySelector('.check-box').innerHTML=val?chkSvg():'';}
+  if(tier===2) drawHeatmap();
+}
 
-  const s = state.streak;
-  document.getElementById('streakCount').innerHTML =
-    (s >= 3 ? '🔥' : '') + s;
+// ── TASK MANAGEMENT (Tier 2 & 3) ──
+function startEdit(tier, key){
+  editTask={tier,key}; addTaskTier=null; render();
+  setTimeout(()=>{const i=document.getElementById('editInput');if(i){i.focus();i.select();}},30);
+}
+function cancelEdit(){ editTask=null; render(); }
+function confirmEdit(){
+  const inp=document.getElementById('editInput');
+  const label=inp?inp.value.trim():'';
+  if(!label){cancelEdit();return;}
+  const list=editTask.tier===2?state.tier2Tasks:state.tier3Tasks;
+  const t=list.find(x=>x.key===editTask.key);
+  if(t) t.label=label;
+  editTask=null; saveState(); render();
+}
+function handleEditKey(e){ if(e.key==='Enter')confirmEdit(); if(e.key==='Escape')cancelEdit(); }
 
-  const prevT3Open = _tier3WasLocked;
-  _tier3WasLocked = !t3Open();
-
-  const mc = document.getElementById('mainContent');
-  let html = '';
-  if (isRest()) {
-    mc.className = 'main-content rest-layout';
-    html += renderRestBanner();
-    html += renderTier2(true);
-    html += renderTier3(true, false);
+function deleteTaskFromTier(tier,key){
+  if(tier===2){
+    state.tier2Tasks=state.tier2Tasks.filter(t=>t.key!==key);
+    delete state.tier2[key];
+    if(state.tier2.custom) delete state.tier2.custom[key];
   } else {
-    mc.className = 'main-content';
-    html += renderTier1();
-    const t2unlocked = t2Open();
-    const t3unlocked = t3Open();
-    html += renderTier2(t2unlocked);
-    html += renderTier3(t3unlocked, prevT3Open && t3unlocked);
+    state.tier3Tasks=state.tier3Tasks.filter(t=>t.key!==key);
+    delete state.tier3[key];
+    if(state.tier3.custom) delete state.tier3.custom[key];
   }
-
-  mc.innerHTML = html;
-
-  // Bind IFOM score input
-  const inp = document.getElementById('ifomScoreInput');
-  if (inp) {
-    inp.addEventListener('input', e => setIfomScore(e.target.value));
-    inp.addEventListener('click', e => e.stopPropagation());
-    inp.addEventListener('keydown', e => e.stopPropagation());
-  }
-
-  // Resume timer interval if needed
-  if (state.tier2.timerRunning && !timerIv) runTimerIv();
-  updateTimerEl();
-  updateCountdowns();
-  drawSparkline();
+  if(editTask&&editTask.tier===tier&&editTask.key===key) editTask=null;
+  saveState(); render();
 }
 
-// ====== RENDER HELPERS ======
-function renderRestBanner() {
-  return `<div class="rest-banner">
-    <div class="rest-banner-title">Rest Day 🌿</div>
-    <div class="rest-banner-sub">No essentials today. All tiers unlocked. Recover well.</div>
-  </div>`;
+// ── TIER 1 CUSTOM TASK MANAGEMENT ──
+function deleteCustomT1(id){
+  state.customTasks=(state.customTasks||[]).filter(t=>t.id!==id);
+  if(state.tier1.custom) delete state.tier1.custom[id];
+  saveState(); render();
 }
 
-function renderTier1() {
-  const t1 = state.tier1;
-  const cfg = DAY_CFG[dow()];
-  const done = t1Done();
-
-  let items = '';
-  items += chkItem('ifom', t1.ifom, '50 IFOM questions + review', false, 't1Toggle');
-
-  if (t1.ifom) {
-    items += `<div class="ifom-score-row">
-      <span class="ifom-score-label">Score:</span>
-      <input type="number" class="ifom-score-input" id="ifomScoreInput"
-        value="${t1.ifomScore}" min="0" max="100" placeholder="0–100" />
-      <span class="ifom-score-pct">%</span>
-    </div>`;
+// ── ADD TASK ──
+function showAddForm(tier){ editTask=null; addTaskTier=tier; render(); setTimeout(()=>{const i=document.getElementById('addTaskInput');if(i)i.focus();},30); }
+function cancelAdd(){ addTaskTier=null; render(); }
+function confirmAdd(){
+  const inp=document.getElementById('addTaskInput');
+  const label=inp?inp.value.trim():'';
+  if(!label){cancelAdd();return;}
+  const key='ct'+Date.now();
+  if(addTaskTier===1){
+    if(!state.customTasks) state.customTasks=[];
+    state.customTasks.push({id:key,label,tier:1});
+    if(!state.tier1.custom) state.tier1.custom={};
+    state.tier1.custom[key]=false;
+  } else if(addTaskTier===2){
+    if(!state.tier2Tasks) state.tier2Tasks=T2_DEFAULTS.map(t=>({...t}));
+    state.tier2Tasks.push({key,label});
+    if(!state.tier2.custom) state.tier2.custom={};
+    state.tier2.custom[key]=false;
+  } else if(addTaskTier===3){
+    if(!state.tier3Tasks) state.tier3Tasks=T3_DEFAULTS.map(t=>({...t}));
+    state.tier3Tasks.push({key,label});
+    if(!state.tier3.custom) state.tier3.custom={};
+    state.tier3.custom[key]=false;
   }
+  addTaskTier=null; saveState(); render();
+}
+function handleAddKey(e){ if(e.key==='Enter')confirmAdd(); if(e.key==='Escape')cancelAdd(); }
 
-  if (cfg === 'gym') {
-    items += chkItem('gym', t1.gym, 'Gym session', false, 't1Toggle');
-  } else if (cfg === 'both') {
-    items += `<div class="gr-row">
-      ${chkItem('gym', t1.gym, 'Gym', false, 't1Toggle')}
-      ${chkItem('run', t1.run, 'Run', false, 't1Toggle')}
-    </div>
-    <p class="gr-hint">Either counts · both can be marked</p>`;
-  }
+function setIfomScore(val){ state.tier1.ifomScore=val; saveState(); drawSparkline(); }
 
-  items += chkItem('whatsapp', t1.whatsapp, 'WhatsApp cleared', false, 't1Toggle');
-
-  const congrats = done ? `<div class="success-notice">
-    <span style="font-size:16px;">✓</span>
-    <span class="success-notice-text">All essentials done. Tier 2 is unlocked.</span>
-  </div>` : '';
-
-  return `<div class="tier-card">
-    <div class="tier-header-bar">
-      <div class="tier-badge t1">Tier 1</div>
-      <div class="tier-title">Essentials</div>
-      <div class="tier-subtitle">${done ? '✓ Complete' : 'Complete all to unlock Tier 2'}</div>
-    </div>
-    <div class="tier-body">${items}${congrats}</div>
-  </div>`;
+// ── EXPORT ──
+function exportJSON(){
+  const data={exportedAt:new Date().toISOString(),version:5,...state};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download=`daily-os-${todayStr()}.json`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(a.href);
 }
 
-function renderTier2(unlocked) {
-  const t2 = state.tier2;
-  const td = timerDone();
-
-  const lockNote = !unlocked ? `<div class="lock-notice">
-    <div class="lock-notice-icon">🔒</div>
-    <div class="lock-notice-text"><strong>Locked.</strong> Complete all Tier 1 essentials first.</div>
-  </div>` : '';
-
-  const items = [
-    { f:'nonmed',   label:'Non-medical reading' },
-    { f:'research', label:'Research advancement' },
-    { f:'intl',     label:'International applications' },
-    { f:'lang',     label:'Language practice (German / French)' }
-  ].map(({f, label}) => chkItem(f, t2[f], label, !unlocked, 't2Toggle', 't2-'+f)).join('');
-
-  let timerHtml = '';
-  if (unlocked) {
-    let btns = '';
-    if (td) {
-      btns = `<span style="font-size:12px;font-weight:600;color:var(--green);">✓ Tier 3 unlocked</span>`;
-    } else if (t2.timerRunning) {
-      btns = `<button class="btn btn-g" id="t2PauseBtn" onclick="pauseTimer()">⏸ Pause</button>`;
-    } else {
-      btns = `<button class="btn btn-p" id="t2StartBtn" onclick="startTimer()">
-        ${t2.timerRemaining === TIMER_FULL ? '▶ Start 60-min Focus' : '▶ Resume'}
-      </button>`;
+// ── SPARKLINE ──
+function drawSparkline(){
+  const c=document.getElementById('sparklineCanvas'); if(!c)return;
+  const ctx=c.getContext('2d'); const W=c.width,H=c.height; ctx.clearRect(0,0,W,H);
+  const pts=[];
+  for(let i=13;i>=1;i--){
+    const d=new Date(); d.setDate(d.getDate()-i);
+    const ds=`${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;
+    const h=state.history[ds];
+    pts.push({v:(h&&h.ifomScore!=null)?h.ifomScore:null});
+  }
+  pts.push({v:state.tier1.ifomScore!==''?parseFloat(state.tier1.ifomScore):null});
+  const valid=pts.filter(p=>p.v!==null);
+  if(valid.length===0){ctx.font='10px Poppins,sans-serif';ctx.fillStyle='#b0aea5';ctx.fillText('No scores yet',6,H/2+4);return;}
+  const pad={t:6,b:6,l:5,r:5},cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
+  const vals=valid.map(p=>p.v); let mn=Math.min(...vals),mx=Math.max(...vals);
+  if(mn===mx){mn=Math.max(0,mn-5);mx=Math.min(100,mx+5);}
+  const rng=mx-mn||1;
+  const xOf=i=>pad.l+(i/(pts.length-1))*cW;
+  const yOf=v=>pad.t+cH-((v-mn)/rng)*cH;
+  let fi=0; for(let i=0;i<pts.length;i++){if(pts[i].v!==null){fi=i;break;}}
+  let li=pts.length-1; for(let i=pts.length-1;i>=0;i--){if(pts[i].v!==null){li=i;break;}}
+  ctx.beginPath(); let started=false;
+  for(let i=0;i<pts.length;i++){
+    if(pts[i].v===null){started=false;continue;}
+    if(!started){ctx.moveTo(xOf(i),yOf(pts[i].v));started=true;}else ctx.lineTo(xOf(i),yOf(pts[i].v));
+  }
+  ctx.lineTo(xOf(li),pad.t+cH); ctx.lineTo(xOf(fi),pad.t+cH); ctx.closePath();
+  const grad=ctx.createLinearGradient(0,pad.t,0,pad.t+cH);
+  grad.addColorStop(0,'rgba(106,155,204,0.2)'); grad.addColorStop(1,'rgba(106,155,204,0)');
+  ctx.fillStyle=grad; ctx.fill();
+  ctx.beginPath(); started=false;
+  for(let i=0;i<pts.length;i++){
+    if(pts[i].v===null){started=false;continue;}
+    if(!started){ctx.moveTo(xOf(i),yOf(pts[i].v));started=true;}else ctx.lineTo(xOf(i),yOf(pts[i].v));
+  }
+  ctx.strokeStyle='#6a9bcc'; ctx.lineWidth=1.6; ctx.lineJoin='round'; ctx.stroke();
+  valid.forEach(p=>{
+    const i=pts.indexOf(p),isLast=i===li;
+    const x=xOf(i),y=yOf(p.v);
+    ctx.beginPath(); ctx.arc(x,y,isLast?4:2.5,0,Math.PI*2);
+    ctx.fillStyle=isLast?'#d97757':'#6a9bcc'; ctx.fill();
+    if(isLast){
+      ctx.strokeStyle='#faf9f5'; ctx.lineWidth=1.5; ctx.stroke();
+      ctx.font=`bold 9px 'DM Mono',monospace`; ctx.fillStyle='#d97757';
+      const lbl=`${Math.round(p.v)}%`,lw=ctx.measureText(lbl).width;
+      ctx.fillText(lbl,Math.min(x-lw/2,W-pad.r-lw),y>pad.t+12?y-7:y+14);
     }
-    timerHtml = `<div class="timer-section">
-      <div class="timer-label">Focus Timer · unlocks Tier 3</div>
-      <div class="timer-row">
-        <div class="timer-clock${t2.timerRunning?' running':''}${td?' done':''}" id="timerClock">${fmtTime(t2.timerRemaining)}</div>
-        <div class="timer-btns">${btns}</div>
-      </div>
+  });
+}
+
+// ── HEATMAP ──
+function drawHeatmap(){
+  const container=document.getElementById('hmGrid');
+  if(container) container.innerHTML=buildHeatmapRows();
+}
+function buildHeatmapRows(){
+  const today=todayStr();
+  const days=[];
+  for(let i=29;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days.push(`${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`);}
+  const tasks=(state.tier2Tasks||[]);
+  let html=`<div class="hm-row"><div class="hm-label"></div>`;
+  days.forEach((d,i)=>{
+    const show=i===0||i===6||i===13||i===20||i===29;
+    const dt=new Date(d+'T12:00:00');
+    html+=`<div class="hm-date-cell">${show?`${dt.getMonth()+1}/${dt.getDate()}`:''}</div>`;
+  });
+  html+=`</div>`;
+  tasks.forEach(task=>{
+    html+=`<div class="hm-row"><div class="hm-label" title="${task.label}">${task.label}</div>`;
+    days.forEach(d=>{
+      const isToday=d===today;
+      let done=false;
+      if(isToday){ done=getTaskDone(task.key,2); }
+      else { const h=state.history[d]; if(h&&h.tier2) done=!!h.tier2[task.key]; }
+      html+=`<div class="hm-cell${done?' hm-done':''}${isToday?' hm-today':''}"></div>`;
+    });
+    html+=`</div>`;
+  });
+  return html;
+}
+
+// ── COUNTDOWNS ──
+function updateCountdowns(){
+  const now=new Date(); now.setHours(0,0,0,0);
+  [['cdRace',TARGETS.race],['cdIFOM',TARGETS.ifom],['cdGrad',TARGETS.grad]].forEach(([id,t])=>{
+    const td=new Date(t); td.setHours(0,0,0,0);
+    const el=document.getElementById(id);
+    if(el) el.textContent=Math.max(0,Math.ceil((td-now)/86400000));
+  });
+}
+
+// ── RENDER ──
+function render(){
+  const today=new Date(),d=dow();
+  document.getElementById('dateDisplay').textContent=`${DAYS_FULL[d]}, ${MONTHS[today.getMonth()]} ${today.getDate()}`;
+  const s=state.streak;
+  document.getElementById('streakCount').innerHTML=(s>=3?'🔥':'')+s;
+  const mc=document.getElementById('mainContent');
+  let html='';
+  if(isRest()){
+    mc.className='main-content rest-layout';
+    html+=renderRestBanner()+renderTier2(true)+renderTier3(true,false);
+  } else {
+    mc.className='main-content';
+    html+=renderTier1()+renderTier2(t2Open())+renderTier3(t3Open(),false);
+  }
+  html+=renderHeatmapSection();
+  mc.innerHTML=html;
+
+  const inp=document.getElementById('ifomScoreInput');
+  if(inp){
+    inp.addEventListener('input',e=>setIfomScore(e.target.value));
+    inp.addEventListener('click',e=>e.stopPropagation());
+    inp.addEventListener('keydown',e=>e.stopPropagation());
+  }
+  if(state.tier2.timerRunning&&!timerIv) runTimerIv();
+  updateTimerEl(); updateCountdowns(); drawSparkline();
+}
+
+// ── RENDER HELPERS ──
+function renderRestBanner(){
+  return `<div class="rest-banner"><div class="rest-banner-title">Rest Day 🌿</div><div class="rest-banner-sub">No essentials today. All tiers unlocked. Recover well.</div></div>`;
+}
+
+function renderTier1(){
+  const t1=state.tier1,cfg=DAY_CFG[dow()],done=t1Done();
+  const customs=(state.customTasks||[]).filter(c=>c.tier===1);
+  let items=chkFixed('ifom',t1.ifom,'50 IFOM questions + review','t1Toggle');
+  if(t1.ifom) items+=`<div class="ifom-score-row"><span class="ifom-score-label">Score:</span><input type="number" class="ifom-score-input" id="ifomScoreInput" value="${t1.ifomScore}" min="0" max="100" placeholder="0–100"/><span class="ifom-score-pct">%</span></div>`;
+  if(cfg==='gym') items+=chkFixed('gym',t1.gym,'Gym session','t1Toggle');
+  else if(cfg==='both') items+=`<div class="gr-row">${chkFixed('gym',t1.gym,'Gym','t1Toggle')}${chkFixed('run',t1.run,'Run','t1Toggle')}</div><p class="gr-hint">Either counts · both can be marked</p>`;
+  items+=chkFixed('whatsapp',t1.whatsapp,'WhatsApp cleared','t1Toggle');
+  customs.forEach(c=>{ items+=chkT1Custom(c.id,!!(t1.custom&&t1.custom[c.id]),c.label); });
+  items+=addTaskArea(1);
+  const congrats=done?`<div class="success-notice"><span style="font-size:16px;">✓</span><span class="success-notice-text">All essentials done. Tier 2 is unlocked.</span></div>`:'';
+  return `<div class="tier-card"><div class="tier-header-bar"><div class="tier-badge t1">Tier 1</div><div class="tier-title">Essentials</div><div class="tier-subtitle">${done?'✓ Complete':'Complete all to unlock Tier 2'}</div></div><div class="tier-body">${items}${congrats}</div></div>`;
+}
+
+function renderTier2(unlocked){
+  const t2=state.tier2,td=timerDone();
+  const lockNote=!unlocked?`<div class="lock-notice"><div class="lock-notice-icon">🔒</div><div class="lock-notice-text"><strong>Locked.</strong> Complete all Tier 1 essentials first.</div></div>`:'';
+  let items=(state.tier2Tasks||[]).map(task=>chkEditable(task,getTaskDone(task.key,2),!unlocked,2)).join('');
+  items+=addTaskArea(2);
+  let timerHtml='';
+  if(unlocked){
+    let btns='';
+    if(td)                   btns=`<span style="font-size:12px;font-weight:600;color:var(--green);">✓ Tier 3 unlocked</span>`;
+    else if(t2.timerRunning) btns=`<button class="btn btn-g" id="t2PauseBtn" onclick="pauseTimer()">⏸ Pause</button>`;
+    else                     btns=`<button class="btn btn-p" id="t2StartBtn" onclick="startTimer()">${t2.timerRemaining===TIMER_FULL?'▶ Start 60-min Focus':'▶ Resume'}</button>`;
+    timerHtml=`<div class="timer-section"><div class="timer-label">Focus Timer · unlocks Tier 3</div><div class="timer-row"><div class="timer-clock${t2.timerRunning?' running':''}${td?' done':''}" id="timerClock">${fmtTime(t2.timerRemaining)}</div><div style="display:flex;gap:8px;align-items:center;">${btns}</div></div></div>`;
+  }
+  return `<div class="tier-card${!unlocked?' locked-tier':''} ${unlocked?'unlock-pop':''}"><div class="tier-header-bar"><div class="tier-badge ${unlocked?'t2':'tlock'}">${unlocked?'Tier 2':'🔒 Tier 2'}</div><div class="tier-title">Deep Work</div><div class="tier-subtitle">${unlocked?(td?'✓ Timer complete':'Start timer to unlock Tier 3'):'Locked'}</div></div><div class="tier-body">${lockNote}${items}${timerHtml}</div></div>`;
+}
+
+function renderTier3(unlocked,animate){
+  const lockNote=!unlocked?`<div class="lock-notice"><div class="lock-notice-icon">🔒</div><div class="lock-notice-text"><strong>Locked.</strong> Let the Tier 2 focus timer reach zero.</div></div>`:'';
+  let items=(state.tier3Tasks||[]).map(task=>chkEditable(task,getTaskDone(task.key,3),!unlocked,3)).join('');
+  items+=addTaskArea(3);
+  return `<div class="tier-card${!unlocked?' locked-tier':''}${animate?' unlock-pop':''}"><div class="tier-header-bar"><div class="tier-badge ${unlocked?'t3':'tlock'}">${unlocked?'Tier 3':'🔒 Tier 3'}</div><div class="tier-title">Recreation</div><div class="tier-subtitle">${unlocked?'Earned.':'Locked'}</div></div><div class="tier-body">${lockNote}${items}</div></div>`;
+}
+
+function renderHeatmapSection(){
+  return `<div class="heatmap-section"><div class="tier-card"><div class="tier-header-bar"><div class="tier-badge t2">Tier 2</div><div class="tier-title">Deep Work Habits</div><div class="tier-subtitle">Last 30 days</div></div><div class="tier-body"><div class="hm-outer"><div class="hm-grid" id="hmGrid">${buildHeatmapRows()}</div></div><div class="hm-legend"><div class="hm-legend-item"><div class="hm-legend-cell" style="background:var(--green);"></div>Completed</div><div class="hm-legend-item"><div class="hm-legend-cell" style="background:var(--surface-3);border:1px solid var(--border);"></div>Not done</div><div class="hm-legend-item"><div class="hm-legend-cell" style="background:var(--surface-3);box-shadow:0 0 0 2px var(--accent);"></div>Today</div></div></div></div></div>`;
+}
+
+// ── ITEM BUILDERS ──
+function chkSvg(){ return `<svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 3.5L3.5 6.5L9 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`; }
+
+// Fixed Tier-1 built-in item (no edit/delete)
+function chkFixed(field, checked, label, toggleFn){
+  const cls='check-item'+(checked?' done':'');
+  return `<div class="${cls}" onclick="${toggleFn}('${field}')"><div class="check-box">${checked?chkSvg():''}</div><div class="check-label">${label}</div></div>`;
+}
+
+// Tier-1 custom item (delete only, no rename)
+function chkT1Custom(id, checked, label){
+  const cls='check-item'+(checked?' done':'');
+  return `<div class="${cls}" id="ct1-${id}" onclick="ctToggle1('${id}')">
+    <div class="check-box">${checked?chkSvg():''}</div>
+    <div class="check-label">${label}</div>
+    <div class="item-actions">
+      <button class="ibtn ibtn-r" onclick="deleteCustomT1('${id}');event.stopPropagation();" title="Delete">×</button>
+    </div>
+  </div>`;
+}
+
+// Tier-2 / Tier-3 item: full edit + delete, or inline edit form
+function chkEditable(task, checked, locked, tier){
+  const isEditing = editTask && editTask.tier===tier && editTask.key===task.key;
+  const cls='check-item'+(checked?' done':'')+(locked?' locked':'')+(isEditing?' editing':'');
+  const escapedLabel = task.label.replace(/"/g,'&quot;');
+
+  if(isEditing){
+    return `<div class="${cls}">
+      <div class="check-box">${checked?chkSvg():''}</div>
+      <input type="text" class="inline-input" id="editInput" value="${escapedLabel}"
+        onkeydown="handleEditKey(event)" onclick="event.stopPropagation()"/>
+      <button class="ibtn ibtn-g" onclick="confirmEdit();event.stopPropagation();" title="Save">✓</button>
+      <button class="ibtn" onclick="cancelEdit();event.stopPropagation();" title="Cancel">✕</button>
     </div>`;
   }
 
-  return `<div class="tier-card${!unlocked?' locked-tier':''} ${unlocked?'unlock-pop':''}">
-    <div class="tier-header-bar">
-      <div class="tier-badge ${unlocked?'t2':'tlock'}">${unlocked?'Tier 2':'🔒 Tier 2'}</div>
-      <div class="tier-title">Deep Work</div>
-      <div class="tier-subtitle">${unlocked ? (td ? '✓ Timer complete' : 'Start timer to unlock Tier 3') : 'Locked'}</div>
+  const oc=locked?'':`onclick="tierToggle(${tier},'${task.key}')"`;
+  return `<div class="${cls}" id="tk-${task.key}" ${oc}>
+    <div class="check-box">${checked?chkSvg():''}</div>
+    <div class="check-label">${task.label}</div>
+    <div class="item-actions">
+      <button class="ibtn" onclick="startEdit(${tier},'${task.key}');event.stopPropagation();" title="Rename">✎</button>
+      <button class="ibtn ibtn-r" onclick="deleteTaskFromTier(${tier},'${task.key}');event.stopPropagation();" title="Delete">×</button>
     </div>
-    <div class="tier-body">${lockNote}${items}${timerHtml}</div>
   </div>`;
 }
 
-function renderTier3(unlocked, animate) {
-  const t3 = state.tier3;
-
-  const lockNote = !unlocked ? `<div class="lock-notice">
-    <div class="lock-notice-icon">🔒</div>
-    <div class="lock-notice-text"><strong>Locked.</strong> Start the Tier 2 focus timer and let it reach zero.</div>
-  </div>` : '';
-
-  const items = [
-    { f:'tv',   label:'TV / YouTube / passive content' },
-    { f:'doom', label:'Doomscrolling' }
-  ].map(({f, label}) => chkItem(f, t3[f], label, !unlocked, 't3Toggle', 't3-'+f)).join('');
-
-  return `<div class="tier-card${!unlocked?' locked-tier':''}${animate?' unlock-pop':''}">
-    <div class="tier-header-bar">
-      <div class="tier-badge ${unlocked?'t3':'tlock'}">${unlocked?'Tier 3':'🔒 Tier 3'}</div>
-      <div class="tier-title">Recreation</div>
-      <div class="tier-subtitle">${unlocked ? 'Earned.' : 'Locked'}</div>
-    </div>
-    <div class="tier-body">${lockNote}${items}</div>
-  </div>`;
+// Add task row / hint
+function addTaskArea(tier){
+  if(addTaskTier===tier){
+    return `<div class="add-task-row"><input type="text" class="inline-input" id="addTaskInput" placeholder="Task name..." onkeydown="handleAddKey(event)"/><button class="ibtn ibtn-g" onclick="confirmAdd()" title="Add">✓</button><button class="ibtn" onclick="cancelAdd()" title="Cancel">✕</button></div>`;
+  }
+  return `<div class="add-task-hint"><button class="ibtn ibtn-g" onclick="showAddForm(${tier})" style="font-size:10px;">+ Add task</button></div>`;
 }
 
-// Build a checkbox item HTML string
-function chkItem(field, checked, label, locked, toggleFn, idAttr) {
-  const cls = 'check-item' + (checked?' done':'') + (locked?' locked':'');
-  const id  = idAttr ? `id="${idAttr}"` : '';
-  const onclick = locked ? '' : `onclick="${toggleFn}('${field}')"`;
-  const checkSvg = checked
-    ? `<svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 3.5L3.5 6.5L9 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`
-    : '';
-  const lockIcon = locked ? `<span class="check-lock">🔒</span>` : '';
-  return `<div class="${cls}" ${id} ${onclick}>
-    <div class="check-box">${checkSvg}</div>
-    <div class="check-label">${label}</div>
-    ${lockIcon}
-  </div>`;
+// ── MIDNIGHT ──
+function scheduleMidnight(){
+  if(midnightTmr) clearTimeout(midnightTmr);
+  const now=new Date();
+  const ms=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1,0,0,1)-now;
+  midnightTmr=setTimeout(()=>{if(timerIv){clearInterval(timerIv);timerIv=null;}loadState();render();scheduleMidnight();},ms);
 }
 
-// ====== MIDNIGHT RESET ======
-function scheduleMidnight() {
-  if (midnightTmr) clearTimeout(midnightTmr);
-  const now = new Date();
-  const ms = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1, 0, 0, 1) - now;
-  midnightTmr = setTimeout(() => {
-    if (timerIv) { clearInterval(timerIv); timerIv = null; }
-    loadState();
-    render();
-    scheduleMidnight();
-  }, ms);
-}
-
-// ====== INIT ======
-function init() {
-  loadState();
-  render();
-  scheduleMidnight();
-  setInterval(updateCountdowns, 60000);
-}
-
+// ── INIT ──
+function init(){ loadState(); render(); scheduleMidnight(); setInterval(updateCountdowns,60000); }
 init();
 </script>
 </body>
