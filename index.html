@@ -23,7 +23,7 @@
 html{scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--t1);font-family:var(--sans);font-size:13px;min-height:100vh;padding-bottom:100px;}
 
-/* HEADER */
+/* ── HEADER ── */
 .g-header{background:rgba(250,249,245,0.97);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 32px;position:sticky;top:0;z-index:100;display:flex;align-items:stretch;justify-content:space-between;gap:20px;height:64px;}
 .hdr-brand{display:flex;flex-direction:column;justify-content:center;}
 .brand-meta{font-size:9px;color:var(--t4);letter-spacing:0.2em;text-transform:uppercase;}
@@ -35,13 +35,13 @@ body{background:var(--bg);color:var(--t1);font-family:var(--sans);font-size:13px
 .hdr-stat-l{font-size:9px;color:var(--t3);letter-spacing:0.12em;margin-top:2px;text-transform:uppercase;font-weight:600;}
 .hdr-actions{display:flex;gap:8px;align-items:center;}
 
-/* MAIN GRID */
+/* ── MAIN GRID ── */
 .main-content{max-width:1280px;margin:0 auto;padding:28px 24px 40px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;align-items:start;}
 @media(max-width:860px){.main-content{grid-template-columns:1fr;}}
 .main-content.rest-layout .rest-banner{grid-column:1/-1;}
 .heatmap-section{grid-column:1/-1;}
 
-/* TIER CARD */
+/* ── TIER CARD ── */
 .tier-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;}
 .tier-card.locked-tier{background:var(--surface-2);}
 .tier-header-bar{padding:14px 20px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
@@ -54,13 +54,13 @@ body{background:var(--bg);color:var(--t1);font-family:var(--sans);font-size:13px
 .tier-subtitle{font-size:11px;color:var(--t3);}
 .tier-body{padding:16px 20px;}
 
-/* LOCK NOTICE */
+/* ── LOCK NOTICE ── */
 .lock-notice{display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:var(--surface-2);border:1px dashed var(--border-h);border-radius:var(--rs);margin-bottom:14px;}
 .lock-notice-icon{font-size:16px;line-height:1.4;flex-shrink:0;}
 .lock-notice-text{font-size:12px;color:var(--t3);line-height:1.5;}
 .lock-notice-text strong{color:var(--t2);font-weight:600;}
 
-/* CHECK ITEMS */
+/* ── CHECK ITEMS ── */
 .check-item{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:var(--rs);border:1px solid var(--border);background:var(--surface-2);margin-bottom:7px;transition:background 0.13s,border-color 0.13s,opacity 0.13s;cursor:pointer;user-select:none;}
 .check-item:hover:not(.locked):not(.editing){background:var(--surface);border-color:var(--border-h);}
 .check-item.done{border-color:var(--green-bd);background:var(--green-bg);}
@@ -70,32 +70,34 @@ body{background:var(--bg);color:var(--t1);font-family:var(--sans);font-size:13px
 .check-item.done .check-box{background:var(--green);border-color:var(--green);}
 .check-label{flex:1;font-size:13px;font-weight:500;color:var(--t2);line-height:1.3;}
 .check-item.done .check-label{color:var(--t3);}
-.check-lock{font-size:12px;color:var(--t4);}
-/* Action buttons shown on hover */
 .check-item .item-actions{display:flex;gap:4px;opacity:0;transition:opacity 0.13s;flex-shrink:0;}
 .check-item:hover:not(.locked):not(.editing) .item-actions{opacity:1;}
 
-/* GYM/RUN */
+/* ── GYM / RUN ── */
 .gr-row{display:flex;gap:8px;margin-bottom:7px;}
 .gr-row .check-item{flex:1;margin-bottom:0;}
 .gr-hint{font-size:10px;color:var(--t4);margin:-2px 0 7px 2px;}
 
-/* IFOM SCORE */
+/* ── IFOM SCORE ── */
 .ifom-score-row{display:flex;align-items:center;gap:10px;padding:6px 11px 10px 38px;margin-top:-5px;margin-bottom:7px;}
 .ifom-score-label{font-size:11px;color:var(--t3);font-weight:500;white-space:nowrap;}
 .ifom-score-input{width:78px!important;padding:5px 8px!important;font-size:13px!important;font-family:var(--mono)!important;font-weight:500!important;background:var(--surface)!important;border:1px solid var(--border)!important;border-radius:var(--rs)!important;color:var(--t1)!important;outline:none!important;transition:border-color 0.13s!important;}
 .ifom-score-input:focus{border-color:var(--accent-bd)!important;}
 .ifom-score-pct{font-size:12px;color:var(--t3);}
 
-/* INLINE TEXT INPUT (edit / add) */
+/* ── INLINE INPUT ── */
 .inline-input{flex:1;padding:4px 8px;font-size:12px;font-family:var(--sans);background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);color:var(--t1);outline:none;transition:border-color 0.13s;min-width:0;}
 .inline-input:focus{border-color:var(--accent-bd);}
 
-/* SUCCESS NOTICE */
+/* ── SUCCESS NOTICE ── */
 .success-notice{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--green-bg);border:1px solid var(--green-bd);border-radius:var(--rs);margin-top:14px;animation:fadeSlide 0.3s ease;}
 .success-notice-text{font-size:12px;font-weight:600;color:#4a5e35;}
 
-/* TIMER */
+/* ── PARTIAL UNLOCK NOTICE ── */
+.partial-notice{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--blue-bg);border:1px solid var(--blue-bd);border-radius:var(--rs);margin-bottom:14px;}
+.partial-notice-text{font-size:12px;font-weight:500;color:#3d6e9e;}
+
+/* ── TIMER ── */
 .timer-section{margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
 .timer-label{font-size:9px;color:var(--t3);letter-spacing:0.12em;text-transform:uppercase;font-weight:600;margin-bottom:10px;}
 .timer-row{display:flex;align-items:center;gap:18px;}
@@ -103,7 +105,7 @@ body{background:var(--bg);color:var(--t1);font-family:var(--sans);font-size:13px
 .timer-clock.running{color:var(--accent);}
 .timer-clock.done{color:var(--green);}
 
-/* BUTTONS */
+/* ── BUTTONS ── */
 .btn{border-radius:var(--rs);padding:7px 15px;font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;letter-spacing:0.04em;transition:all 0.13s;border:1px solid;}
 .btn-p{background:var(--accent);border-color:var(--accent);color:#faf9f5;}
 .btn-p:hover{background:#c96a4a;border-color:#c96a4a;}
@@ -116,16 +118,16 @@ body{background:var(--bg);color:var(--t1);font-family:var(--sans);font-size:13px
 .ibtn-g{border-color:var(--green-bd);color:var(--green);}
 .ibtn-g:hover{border-color:var(--green);background:var(--green-bg);}
 
-/* ADD TASK ROW */
+/* ── ADD TASK ── */
 .add-task-row{display:flex;gap:7px;align-items:center;padding-top:10px;margin-top:8px;border-top:1px solid var(--border);}
 .add-task-hint{padding-top:10px;margin-top:6px;border-top:1px solid var(--border);}
 
-/* REST DAY */
+/* ── REST DAY ── */
 .rest-banner{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:36px 28px;text-align:center;box-shadow:var(--sh);}
 .rest-banner-title{font-family:var(--serif);font-size:26px;font-weight:600;color:var(--t1);margin-bottom:6px;}
 .rest-banner-sub{font-size:13px;color:var(--t3);}
 
-/* HEATMAP */
+/* ── HEATMAP ── */
 .hm-outer{overflow-x:auto;padding-bottom:4px;}
 .hm-grid{display:flex;flex-direction:column;gap:4px;min-width:max-content;}
 .hm-row{display:flex;align-items:center;gap:3px;}
@@ -139,7 +141,7 @@ body{background:var(--bg);color:var(--t1);font-family:var(--sans);font-size:13px
 .hm-legend-item{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--t3);}
 .hm-legend-cell{width:12px;height:12px;border-radius:2px;flex-shrink:0;}
 
-/* BOTTOM BAR */
+/* ── BOTTOM BAR ── */
 .bottom-bar{position:fixed;bottom:0;left:0;right:0;height:90px;background:rgba(250,249,245,0.98);backdrop-filter:blur(16px);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 32px;z-index:100;}
 .sparkline-wrap{display:flex;flex-direction:column;gap:5px;padding-right:28px;}
 .sparkline-label{font-size:9px;color:var(--t4);letter-spacing:0.15em;text-transform:uppercase;font-weight:600;}
@@ -152,6 +154,37 @@ body{background:var(--bg);color:var(--t1);font-family:var(--sans);font-size:13px
 .cd-label{font-size:9px;color:var(--t3);letter-spacing:0.1em;text-transform:uppercase;font-weight:600;margin-top:2px;}
 .cd-date{font-size:9px;color:var(--t4);}
 
+/* ── HISTORY MODAL ── */
+.overlay{position:fixed;inset:0;background:rgba(20,20,19,0.45);display:flex;align-items:center;justify-content:center;z-index:200;padding:24px;backdrop-filter:blur(6px);animation:fadeIn 0.15s ease;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;box-shadow:0 24px 80px rgba(20,20,19,0.15);animation:slideUp 0.18s ease;}
+.modal-sup{font-size:10px;color:var(--accent);letter-spacing:0.14em;text-transform:uppercase;margin-bottom:4px;font-weight:600;}
+.modal-title{font-family:var(--sans);font-size:20px;font-weight:700;color:var(--t1);margin-bottom:20px;letter-spacing:-0.01em;}
+/* Day pills */
+.day-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px;}
+.day-pill{padding:5px 11px;border-radius:20px;border:1px solid var(--border);background:transparent;font-size:11px;font-family:var(--sans);font-weight:500;color:var(--t3);cursor:pointer;transition:all 0.13s;white-space:nowrap;}
+.day-pill:hover{border-color:var(--border-h);color:var(--t2);background:var(--surface-2);}
+.day-pill.active{background:var(--accent);border-color:var(--accent);color:#faf9f5;font-weight:600;}
+.day-pill.has-data{border-color:var(--blue-bd);color:#3d6e9e;}
+.day-pill.has-data.active{background:var(--accent);border-color:var(--accent);color:#faf9f5;}
+/* Edit panel */
+.hist-panel{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--rs);padding:16px;animation:fadeSlide 0.15s ease;}
+.hist-section-label{font-size:9px;color:var(--t3);letter-spacing:0.12em;text-transform:uppercase;font-weight:600;margin-bottom:10px;}
+.hist-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.hist-check{width:17px;height:17px;border-radius:4px;border:1.5px solid var(--border-h);background:var(--surface);flex-shrink:0;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.13s;}
+.hist-check.on{background:var(--green);border-color:var(--green);}
+.hist-label{font-size:13px;font-weight:500;color:var(--t2);flex:1;}
+.hist-score-row{display:flex;align-items:center;gap:8px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.hist-score-label{font-size:11px;color:var(--t3);}
+.hist-score-input{width:72px;padding:5px 8px;font-size:13px;font-family:var(--mono);font-weight:500;background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);color:var(--t1);outline:none;}
+.hist-score-input:focus{border-color:var(--accent-bd);}
+.hist-t2-label{font-size:9px;color:var(--t3);letter-spacing:0.12em;text-transform:uppercase;font-weight:600;margin:0 0 10px;}
+/* Modal actions */
+.m-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);}
+/* Streak recomputed badge */
+.streak-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:20px;background:var(--accent-bg);border:1px solid var(--accent-bd);font-size:11px;font-weight:600;color:var(--accent);}
+
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeSlide{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 @keyframes unlockPop{from{opacity:0;transform:scale(0.985)}to{opacity:1;transform:scale(1)}}
 .unlock-pop{animation:unlockPop 0.22s ease;}
@@ -173,11 +206,27 @@ input[type=number]{-moz-appearance:textfield;}
     </div>
   </div>
   <div class="hdr-actions">
+    <button class="btn btn-g" onclick="openHistoryModal()" style="font-size:10px;padding:5px 14px;height:34px;">📅 History</button>
     <button class="btn btn-g" onclick="exportJSON()" style="font-size:10px;padding:5px 14px;height:34px;">⬇ Export</button>
   </div>
 </header>
 
 <main class="main-content" id="mainContent"></main>
+
+<!-- HISTORY MODAL -->
+<div class="overlay" id="histOverlay" style="display:none;" onclick="handleOverlayClick(event)">
+  <div class="modal" id="histModal">
+    <div class="modal-sup">Edit Past Day</div>
+    <div class="modal-title">History</div>
+    <div class="day-pills" id="dayPills"></div>
+    <div id="histEditPanel"></div>
+    <div class="m-actions">
+      <div id="streakResult"></div>
+      <button class="btn btn-g" onclick="closeHistoryModal()">Close</button>
+      <button class="btn btn-p" id="histSaveBtn" onclick="saveHistoryEdit()" style="display:none;">Save changes</button>
+    </div>
+  </div>
+</div>
 
 <footer class="bottom-bar">
   <div class="sparkline-wrap">
@@ -197,11 +246,10 @@ input[type=number]{-moz-appearance:textfield;}
 const STORAGE_KEY = 'licm_daily_os_v5';
 const TIMER_FULL  = 3600;
 const DAYS_FULL   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-const MONTHS      = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MONTHS_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MONTHS_SH   = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const TARGETS     = { race:new Date('2026-05-30T00:00:00'), ifom:new Date('2026-06-29T00:00:00'), grad:new Date('2026-07-01T00:00:00') };
 const DAY_CFG     = { 0:'rest',1:'gym',2:'gym',3:'both',4:'gym',5:'both',6:'both' };
-
-// Default task lists (used for initialization only)
 const T2_DEFAULTS = [
   {key:'nonmed',  label:'Non-medical reading'},
   {key:'research',label:'Research advancement'},
@@ -217,160 +265,150 @@ const T3_DEFAULTS = [
 let state       = null;
 let timerIv     = null;
 let midnightTmr = null;
-let addTaskTier = null;   // null | 1 | 2 | 3
-let editTask    = null;   // null | { tier: 2|3, key: string }
+let addTaskTier = null;
+let editTask    = null;
 
-function defaultDayState() {
+// History modal state
+let histSelectedDate = null;
+let histDraft        = null; // { completed, ifomScore, tier2: {key:bool} }
+
+function defaultDayState(){
   return {
-    tier1:{ ifom:false, ifomScore:'', gym:false, run:false, whatsapp:false, custom:{} },
-    tier2:{ custom:{}, timerRunning:false, timerRemaining:TIMER_FULL, timerEnd:null },
-    tier3:{ custom:{} }
+    tier1:{ifom:false,ifomScore:'',gym:false,run:false,whatsapp:false,custom:{}},
+    tier2:{custom:{},timerRunning:false,timerRemaining:TIMER_FULL,timerEnd:null},
+    tier3:{custom:{}}
   };
 }
-function defaultState() {
+function defaultState(){
   return {
-    date: todayStr(),
-    ...defaultDayState(),
-    streak: 0,
-    history: {},
-    customTasks: [],      // tier-1 custom tasks only
-    tier2Tasks: T2_DEFAULTS.map(t=>({...t})),
-    tier3Tasks: T3_DEFAULTS.map(t=>({...t}))
+    date:todayStr(),...defaultDayState(),
+    streak:0,history:{},
+    customTasks:[],
+    tier2Tasks:T2_DEFAULTS.map(t=>({...t})),
+    tier3Tasks:T3_DEFAULTS.map(t=>({...t}))
   };
 }
 function todayStr(){ const d=new Date(); return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`; }
 function p2(n){ return String(n).padStart(2,'0'); }
+function dateLabel(ds){
+  const d=new Date(ds+'T12:00:00');
+  return `${MONTHS_SH[d.getMonth()]} ${d.getDate()}`;
+}
+function fullDateLabel(ds){
+  const d=new Date(ds+'T12:00:00');
+  return `${DAYS_FULL[d.getDay()]}, ${MONTHS_FULL[d.getMonth()]} ${d.getDate()}`;
+}
 
 // ── LOAD / SAVE ──
-function loadState() {
+function loadState(){
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) { state = defaultState(); return; }
-    const saved = JSON.parse(raw);
-    const today = todayStr();
-
-    if (!saved.date || saved.date !== today) {
-      // ── New day: snapshot yesterday, compute streak ──
-      const prevDate = saved.date || today;
-      const prevDow  = new Date(prevDate+'T12:00:00').getDay();
-      const prevDone = prevDow===0 ? true : tier1DoneFor(saved.tier1||{}, prevDow);
-
-      const nowD=new Date(today+'T12:00:00'), prevD=new Date(prevDate+'T12:00:00');
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(!raw){state=defaultState();return;}
+    const saved=JSON.parse(raw);
+    const today=todayStr();
+    if(!saved.date||saved.date!==today){
+      const prevDate=saved.date||today;
+      const prevDow=new Date(prevDate+'T12:00:00').getDay();
+      const prevDone=prevDow===0?true:tier1DoneFor(saved.tier1||{},prevDow);
+      const nowD=new Date(today+'T12:00:00'),prevD=new Date(prevDate+'T12:00:00');
       const diffD=Math.round((nowD-prevD)/86400000);
-      let streak = saved.streak||0;
-      streak = diffD===1 ? (prevDone ? streak+1 : 0) : 0;
-
-      // Snapshot tier2 completions for heatmap
+      let streak=saved.streak||0;
+      streak=diffD===1?(prevDone?streak+1:0):0;
       const t2snap={};
-      const t2tasks = saved.tier2Tasks || T2_DEFAULTS;
-      t2tasks.forEach(t => {
-        t2snap[t.key] = t.key in (saved.tier2||{})
-          ? !!saved.tier2[t.key]
-          : !!(saved.tier2&&saved.tier2.custom&&saved.tier2.custom[t.key]);
+      const t2tasks=saved.tier2Tasks||T2_DEFAULTS;
+      t2tasks.forEach(t=>{
+        if(typeof saved.tier2[t.key]==='boolean') t2snap[t.key]=saved.tier2[t.key];
+        else t2snap[t.key]=!!(saved.tier2&&saved.tier2.custom&&saved.tier2.custom[t.key]);
       });
-
-      const history = saved.history||{};
-      history[prevDate] = {
-        completed: prevDone,
-        ifomScore: (saved.tier1&&saved.tier1.ifomScore!=='') ? parseFloat(saved.tier1.ifomScore) : null,
-        tier2: t2snap
-      };
-
+      const history=saved.history||{};
+      history[prevDate]={completed:prevDone,ifomScore:(saved.tier1&&saved.tier1.ifomScore!=='')?parseFloat(saved.tier1.ifomScore):null,tier2:t2snap};
       const cutoff=new Date(); cutoff.setDate(cutoff.getDate()-90);
-      Object.keys(history).forEach(k=>{ if(new Date(k+'T12:00:00')<cutoff) delete history[k]; });
-
-      state = {
-        date: today,
-        ...defaultDayState(),
-        streak, history,
-        customTasks: (saved.customTasks||[]).filter(c=>c.tier===1),
-        tier2Tasks:  saved.tier2Tasks || T2_DEFAULTS.map(t=>({...t})),
-        tier3Tasks:  saved.tier3Tasks || T3_DEFAULTS.map(t=>({...t}))
-      };
+      Object.keys(history).forEach(k=>{if(new Date(k+'T12:00:00')<cutoff)delete history[k];});
+      state={date:today,...defaultDayState(),streak,history,customTasks:(saved.customTasks||[]).filter(c=>c.tier===1),tier2Tasks:saved.tier2Tasks||T2_DEFAULTS.map(t=>({...t})),tier3Tasks:saved.tier3Tasks||T3_DEFAULTS.map(t=>({...t}))};
     } else {
-      // ── Same day: restore ──
-      state = { ...defaultState(), ...saved };
-      state.history     = state.history     || {};
-      state.customTasks = (state.customTasks||[]).filter(c=>c.tier===1);
-      state.tier2Tasks  = state.tier2Tasks  || T2_DEFAULTS.map(t=>({...t}));
-      state.tier3Tasks  = state.tier3Tasks  || T3_DEFAULTS.map(t=>({...t}));
-      if (!state.tier1.custom) state.tier1.custom = {};
-      if (!state.tier2.custom) state.tier2.custom = {};
-      if (!state.tier3.custom) state.tier3.custom = {};
-
-      // Resume timer
-      if (state.tier2.timerRunning && state.tier2.timerEnd) {
-        const rem = Math.max(0, Math.floor((state.tier2.timerEnd-Date.now())/1000));
-        state.tier2.timerRemaining = rem;
-        if (rem<=0) { state.tier2.timerRunning=false; state.tier2.timerRemaining=0; state.tier2.timerEnd=null; }
+      state={...defaultState(),...saved};
+      state.history=state.history||{};
+      state.customTasks=(state.customTasks||[]).filter(c=>c.tier===1);
+      state.tier2Tasks=state.tier2Tasks||T2_DEFAULTS.map(t=>({...t}));
+      state.tier3Tasks=state.tier3Tasks||T3_DEFAULTS.map(t=>({...t}));
+      if(!state.tier1.custom)state.tier1.custom={};
+      if(!state.tier2.custom)state.tier2.custom={};
+      if(!state.tier3.custom)state.tier3.custom={};
+      if(state.tier2.timerRunning&&state.tier2.timerEnd){
+        const rem=Math.max(0,Math.floor((state.tier2.timerEnd-Date.now())/1000));
+        state.tier2.timerRemaining=rem;
+        if(rem<=0){state.tier2.timerRunning=false;state.tier2.timerRemaining=0;state.tier2.timerEnd=null;}
       }
     }
-  } catch(e) { console.error('loadState',e); state=defaultState(); }
+  } catch(e){console.error('loadState',e);state=defaultState();}
 }
-function saveState(){ try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){console.error(e);} }
+function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){console.error(e);}}
 
 // ── DERIVED ──
 function dow(){ return new Date().getDay(); }
 function isRest(){ return dow()===0; }
 function tier1DoneFor(t1,d){
   const cfg=DAY_CFG[d];
-  if(cfg==='rest') return true;
-  if(!t1.ifom||!t1.whatsapp) return false;
-  if(cfg==='gym'&&!t1.gym) return false;
-  if(cfg==='both'&&!t1.gym&&!t1.run) return false;
+  if(cfg==='rest')return true;
+  if(!t1.ifom||!t1.whatsapp)return false;
+  if(cfg==='gym'&&!t1.gym)return false;
+  if(cfg==='both'&&!t1.gym&&!t1.run)return false;
   return true;
 }
 function t1Done(){ return isRest()||tier1DoneFor(state.tier1,dow()); }
 function timerDone(){ return state.tier2.timerRemaining<=0; }
 function t2Open(){ return isRest()||t1Done(); }
-function t3Open(){ return isRest()||timerDone(); }
 
-// Helper: get done value for a task by tier
-function getTaskDone(key, tier) {
-  const obj = tier===2 ? state.tier2 : state.tier3;
-  // Built-in keys sit directly on the tier object; custom keys under .custom
-  if (key in obj && typeof obj[key]==='boolean') return obj[key];
-  return !!(obj.custom && obj.custom[key]);
+// ── TIER 3 UNLOCK: timer done OR ≥3 Tier 2 tasks done ──
+function t2DoneCount(){
+  return (state.tier2Tasks||[]).filter(t=>getTaskDone(t.key,2)).length;
 }
-function setTaskDone(key, tier, val) {
-  const obj = tier===2 ? state.tier2 : state.tier3;
-  if (key in obj && typeof obj[key]==='boolean') { obj[key]=val; return; }
-  if (!obj.custom) obj.custom={};
+function t3Open(){ return isRest()||timerDone()||t2DoneCount()>=3; }
+
+function getTaskDone(key,tier){
+  const obj=tier===2?state.tier2:state.tier3;
+  if(key in obj&&typeof obj[key]==='boolean')return obj[key];
+  return !!(obj.custom&&obj.custom[key]);
+}
+function setTaskDone(key,tier,val){
+  const obj=tier===2?state.tier2:state.tier3;
+  if(key in obj&&typeof obj[key]==='boolean'){obj[key]=val;return;}
+  if(!obj.custom)obj.custom={};
   obj.custom[key]=val;
 }
 
 // ── TIMER ──
 function startTimer(){
-  if(state.tier2.timerRunning||state.tier2.timerRemaining<=0) return;
+  if(state.tier2.timerRunning||state.tier2.timerRemaining<=0)return;
   state.tier2.timerRunning=true;
   state.tier2.timerEnd=Date.now()+state.tier2.timerRemaining*1000;
-  saveState(); runTimerIv(); render();
+  saveState();runTimerIv();render();
 }
 function pauseTimer(){
-  if(!state.tier2.timerRunning) return;
+  if(!state.tier2.timerRunning)return;
   state.tier2.timerRemaining=Math.max(0,Math.floor((state.tier2.timerEnd-Date.now())/1000));
-  state.tier2.timerRunning=false; state.tier2.timerEnd=null;
+  state.tier2.timerRunning=false;state.tier2.timerEnd=null;
   if(timerIv){clearInterval(timerIv);timerIv=null;}
-  saveState(); render();
+  saveState();render();
 }
 function runTimerIv(){
-  if(timerIv) clearInterval(timerIv);
+  if(timerIv)clearInterval(timerIv);
   timerIv=setInterval(()=>{
     if(!state.tier2.timerRunning){clearInterval(timerIv);timerIv=null;return;}
     const rem=Math.max(0,Math.floor((state.tier2.timerEnd-Date.now())/1000));
-    state.tier2.timerRemaining=rem; updateTimerEl();
+    state.tier2.timerRemaining=rem;updateTimerEl();
     if(rem<=0){
       state.tier2.timerRunning=false;state.tier2.timerRemaining=0;state.tier2.timerEnd=null;
-      clearInterval(timerIv);timerIv=null; saveState(); render();
+      clearInterval(timerIv);timerIv=null;saveState();render();
     }
   },1000);
 }
-function fmtTime(s){ return `${p2(Math.floor(s/60))}:${p2(s%60)}`; }
+function fmtTime(s){return `${p2(Math.floor(s/60))}:${p2(s%60)}`;}
 function updateTimerEl(){
   const el=document.getElementById('timerClock');
   const sb=document.getElementById('t2StartBtn');
   const pb=document.getElementById('t2PauseBtn');
-  if(!el) return;
+  if(!el)return;
   el.textContent=fmtTime(state.tier2.timerRemaining);
   el.className='timer-clock'+(state.tier2.timerRunning?' running':'')+(state.tier2.timerRemaining===0?' done':'');
   if(sb&&pb){
@@ -383,112 +421,248 @@ function updateTimerEl(){
 // ── TIER 1 TOGGLES ──
 function t1Toggle(f){
   state.tier1[f]=!state.tier1[f];
-  if(f==='ifom'&&!state.tier1.ifom) state.tier1.ifomScore='';
-  saveState(); render();
+  if(f==='ifom'&&!state.tier1.ifom)state.tier1.ifomScore='';
+  saveState();render();
 }
 function ctToggle1(id){
-  if(!state.tier1.custom) state.tier1.custom={};
-  state.tier1.custom[id]=!state.tier1.custom[id]; saveState();
+  if(!state.tier1.custom)state.tier1.custom={};
+  state.tier1.custom[id]=!state.tier1.custom[id];saveState();
   const el=document.getElementById('ct1-'+id);
   const done=!!state.tier1.custom[id];
   if(el){el.className='check-item'+(done?' done':'');el.querySelector('.check-box').innerHTML=done?chkSvg():'';}
 }
 
-// ── TIER 2 / 3 TOGGLE ──
-function tierToggle(tier, key){
-  const open = tier===2 ? t2Open() : t3Open();
-  if(!open) return;
-  const val = !getTaskDone(key, tier);
-  setTaskDone(key, tier, val); saveState();
+// ── TIER 2/3 TOGGLES ──
+function tierToggle(tier,key){
+  const open=tier===2?t2Open():t3Open();
+  if(!open)return;
+  const val=!getTaskDone(key,tier);
+  setTaskDone(key,tier,val);saveState();
   const el=document.getElementById('tk-'+key);
   if(el){el.className='check-item'+(val?' done':'');el.querySelector('.check-box').innerHTML=val?chkSvg():'';}
-  if(tier===2) drawHeatmap();
+  if(tier===2){drawHeatmap();reRenderTier3Unlock();}
 }
 
-// ── TASK MANAGEMENT (Tier 2 & 3) ──
-function startEdit(tier, key){
-  editTask={tier,key}; addTaskTier=null; render();
-  setTimeout(()=>{const i=document.getElementById('editInput');if(i){i.focus();i.select();}},30);
+// Re-render just the Tier 3 card lock state without full render (avoids timer flicker)
+function reRenderTier3Unlock(){
+  const mc=document.getElementById('mainContent');
+  if(!mc)return;
+  // Find the tier3 card (3rd grid child before heatmap) and replace it
+  // Safest: just do a full render since timer is handled by updateTimerEl separately
+  render();
 }
-function cancelEdit(){ editTask=null; render(); }
+
+// ── TASK MANAGEMENT ──
+function startEdit(tier,key){editTask={tier,key};addTaskTier=null;render();setTimeout(()=>{const i=document.getElementById('editInput');if(i){i.focus();i.select();}},30);}
+function cancelEdit(){editTask=null;render();}
 function confirmEdit(){
   const inp=document.getElementById('editInput');
   const label=inp?inp.value.trim():'';
   if(!label){cancelEdit();return;}
   const list=editTask.tier===2?state.tier2Tasks:state.tier3Tasks;
   const t=list.find(x=>x.key===editTask.key);
-  if(t) t.label=label;
-  editTask=null; saveState(); render();
+  if(t)t.label=label;
+  editTask=null;saveState();render();
 }
-function handleEditKey(e){ if(e.key==='Enter')confirmEdit(); if(e.key==='Escape')cancelEdit(); }
-
+function handleEditKey(e){if(e.key==='Enter')confirmEdit();if(e.key==='Escape')cancelEdit();}
 function deleteTaskFromTier(tier,key){
-  if(tier===2){
-    state.tier2Tasks=state.tier2Tasks.filter(t=>t.key!==key);
-    delete state.tier2[key];
-    if(state.tier2.custom) delete state.tier2.custom[key];
-  } else {
-    state.tier3Tasks=state.tier3Tasks.filter(t=>t.key!==key);
-    delete state.tier3[key];
-    if(state.tier3.custom) delete state.tier3.custom[key];
-  }
-  if(editTask&&editTask.tier===tier&&editTask.key===key) editTask=null;
-  saveState(); render();
+  if(tier===2){state.tier2Tasks=state.tier2Tasks.filter(t=>t.key!==key);delete state.tier2[key];if(state.tier2.custom)delete state.tier2.custom[key];}
+  else{state.tier3Tasks=state.tier3Tasks.filter(t=>t.key!==key);delete state.tier3[key];if(state.tier3.custom)delete state.tier3.custom[key];}
+  if(editTask&&editTask.tier===tier&&editTask.key===key)editTask=null;
+  saveState();render();
 }
-
-// ── TIER 1 CUSTOM TASK MANAGEMENT ──
 function deleteCustomT1(id){
   state.customTasks=(state.customTasks||[]).filter(t=>t.id!==id);
-  if(state.tier1.custom) delete state.tier1.custom[id];
-  saveState(); render();
+  if(state.tier1.custom)delete state.tier1.custom[id];
+  saveState();render();
 }
-
-// ── ADD TASK ──
-function showAddForm(tier){ editTask=null; addTaskTier=tier; render(); setTimeout(()=>{const i=document.getElementById('addTaskInput');if(i)i.focus();},30); }
-function cancelAdd(){ addTaskTier=null; render(); }
+function showAddForm(tier){editTask=null;addTaskTier=tier;render();setTimeout(()=>{const i=document.getElementById('addTaskInput');if(i)i.focus();},30);}
+function cancelAdd(){addTaskTier=null;render();}
 function confirmAdd(){
   const inp=document.getElementById('addTaskInput');
   const label=inp?inp.value.trim():'';
   if(!label){cancelAdd();return;}
   const key='ct'+Date.now();
   if(addTaskTier===1){
-    if(!state.customTasks) state.customTasks=[];
+    if(!state.customTasks)state.customTasks=[];
     state.customTasks.push({id:key,label,tier:1});
-    if(!state.tier1.custom) state.tier1.custom={};
+    if(!state.tier1.custom)state.tier1.custom={};
     state.tier1.custom[key]=false;
   } else if(addTaskTier===2){
-    if(!state.tier2Tasks) state.tier2Tasks=T2_DEFAULTS.map(t=>({...t}));
+    if(!state.tier2Tasks)state.tier2Tasks=T2_DEFAULTS.map(t=>({...t}));
     state.tier2Tasks.push({key,label});
-    if(!state.tier2.custom) state.tier2.custom={};
+    if(!state.tier2.custom)state.tier2.custom={};
     state.tier2.custom[key]=false;
   } else if(addTaskTier===3){
-    if(!state.tier3Tasks) state.tier3Tasks=T3_DEFAULTS.map(t=>({...t}));
+    if(!state.tier3Tasks)state.tier3Tasks=T3_DEFAULTS.map(t=>({...t}));
     state.tier3Tasks.push({key,label});
-    if(!state.tier3.custom) state.tier3.custom={};
+    if(!state.tier3.custom)state.tier3.custom={};
     state.tier3.custom[key]=false;
   }
-  addTaskTier=null; saveState(); render();
+  addTaskTier=null;saveState();render();
 }
-function handleAddKey(e){ if(e.key==='Enter')confirmAdd(); if(e.key==='Escape')cancelAdd(); }
-
-function setIfomScore(val){ state.tier1.ifomScore=val; saveState(); drawSparkline(); }
+function handleAddKey(e){if(e.key==='Enter')confirmAdd();if(e.key==='Escape')cancelAdd();}
+function setIfomScore(val){state.tier1.ifomScore=val;saveState();drawSparkline();}
 
 // ── EXPORT ──
 function exportJSON(){
   const data={exportedAt:new Date().toISOString(),version:5,...state};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob); a.download=`daily-os-${todayStr()}.json`;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(a.href);
+  a.href=URL.createObjectURL(blob);a.download=`daily-os-${todayStr()}.json`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(a.href);
+}
+
+// ── HISTORY MODAL ──
+function openHistoryModal(){
+  histSelectedDate=null;histDraft=null;
+  renderDayPills();
+  document.getElementById('histEditPanel').innerHTML='<p style="font-size:12px;color:var(--t4);text-align:center;padding:16px 0;">Select a day above to edit it.</p>';
+  document.getElementById('histSaveBtn').style.display='none';
+  document.getElementById('streakResult').innerHTML='';
+  document.getElementById('histOverlay').style.display='flex';
+}
+function closeHistoryModal(){ document.getElementById('histOverlay').style.display='none'; }
+function handleOverlayClick(e){ if(e.target===document.getElementById('histOverlay'))closeHistoryModal(); }
+
+function renderDayPills(){
+  const today=todayStr();
+  const pills=[];
+  for(let i=1;i<=30;i++){
+    const d=new Date(); d.setDate(d.getDate()-i);
+    const ds=`${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;
+    pills.push(ds);
+  }
+  const container=document.getElementById('dayPills');
+  container.innerHTML=pills.map(ds=>{
+    const hasData=!!state.history[ds];
+    const isActive=ds===histSelectedDate;
+    return `<button class="day-pill${hasData?' has-data':''}${isActive?' active':''}" onclick="selectHistDay('${ds}')">${dateLabel(ds)}</button>`;
+  }).join('');
+}
+
+function selectHistDay(ds){
+  histSelectedDate=ds;
+  const existing=state.history[ds]||{};
+  // Build draft from existing snapshot or blank
+  histDraft={
+    completed: existing.completed||false,
+    ifomScore: existing.ifomScore!=null ? String(existing.ifomScore) : '',
+    tier2: {}
+  };
+  // Populate tier2 from snapshot; default false for unknown tasks
+  (state.tier2Tasks||[]).forEach(t=>{
+    histDraft.tier2[t.key]=(existing.tier2&&existing.tier2[t.key])?true:false;
+  });
+  renderDayPills();
+  renderHistPanel();
+  document.getElementById('histSaveBtn').style.display='';
+  document.getElementById('streakResult').innerHTML='';
+}
+
+function renderHistPanel(){
+  const ds=histSelectedDate;
+  if(!ds||!histDraft)return;
+  const d=histDraft;
+  // Tier 1 row
+  let html=`<div class="hist-panel">
+    <div style="font-size:13px;font-weight:600;color:var(--t2);margin-bottom:14px;">${fullDateLabel(ds)}</div>
+    <div class="hist-section-label">Tier 1 — Essentials</div>
+    <div class="hist-row">
+      <div class="hist-check ${d.completed?'on':''}" id="histT1Check" onclick="histToggleT1()">
+        ${d.completed?chkSvg():''}
+      </div>
+      <div class="hist-label">All Tier 1 essentials completed</div>
+    </div>
+    <div class="hist-score-row">
+      <span class="hist-score-label">IFOM score:</span>
+      <input type="number" class="hist-score-input" id="histScoreInput"
+        value="${d.ifomScore}" min="0" max="100" placeholder="—"
+        oninput="histDraft.ifomScore=this.value"/>
+      <span style="font-size:12px;color:var(--t3);">%</span>
+    </div>
+    <div class="hist-t2-label">Tier 2 — Deep Work tasks</div>`;
+  (state.tier2Tasks||[]).forEach(t=>{
+    const done=!!histDraft.tier2[t.key];
+    html+=`<div class="hist-row">
+      <div class="hist-check ${done?'on':''}" id="histT2-${t.key}" onclick="histToggleT2('${t.key}')">
+        ${done?chkSvg():''}
+      </div>
+      <div class="hist-label">${t.label}</div>
+    </div>`;
+  });
+  html+=`</div>`;
+  document.getElementById('histEditPanel').innerHTML=html;
+}
+
+function histToggleT1(){
+  histDraft.completed=!histDraft.completed;
+  const el=document.getElementById('histT1Check');
+  if(el){el.className='hist-check'+(histDraft.completed?' on':'');el.innerHTML=histDraft.completed?chkSvg():'';}
+}
+function histToggleT2(key){
+  histDraft.tier2[key]=!histDraft.tier2[key];
+  const el=document.getElementById('histT2-'+key);
+  if(el){el.className='hist-check'+(histDraft.tier2[key]?' on':'');el.innerHTML=histDraft.tier2[key]?chkSvg():'';}
+}
+
+function saveHistoryEdit(){
+  if(!histSelectedDate||!histDraft)return;
+  // Commit draft to history
+  const scoreVal=histDraft.ifomScore!==''?parseFloat(histDraft.ifomScore):null;
+  state.history[histSelectedDate]={
+    completed:histDraft.completed,
+    ifomScore:(scoreVal!=null&&!isNaN(scoreVal))?scoreVal:null,
+    tier2:{...histDraft.tier2}
+  };
+  // Recompute streak from scratch across all history
+  recomputeStreak();
+  saveState();
+  // Show feedback
+  document.getElementById('streakResult').innerHTML=
+    `<span class="streak-badge">🔥 Streak recalculated: ${state.streak}</span>`;
+  // Refresh pills and charts
+  renderDayPills();
+  drawSparkline();
+  drawHeatmap();
+  document.getElementById('streakCount').innerHTML=(state.streak>=3?'🔥':'')+state.streak;
+}
+
+function recomputeStreak(){
+  // Collect all history dates + today, sort ascending
+  const today=todayStr();
+  const allDates=Object.keys(state.history).filter(d=>d<today).sort();
+  if(allDates.length===0){state.streak=0;return;}
+  // Walk forward, compute streak ending at most-recent entry
+  let streak=0;
+  for(let i=0;i<allDates.length;i++){
+    const d=allDates[i];
+    const dow=new Date(d+'T12:00:00').getDay();
+    const completed=dow===0?true:(state.history[d]&&state.history[d].completed)?true:false;
+    if(i===0){streak=completed?1:0;continue;}
+    const prev=allDates[i-1];
+    const prevD=new Date(prev+'T12:00:00');
+    const curD=new Date(d+'T12:00:00');
+    const diff=Math.round((curD-prevD)/86400000);
+    if(diff===1) streak=completed?streak+1:0;
+    else streak=completed?1:0;
+  }
+  // Extend to today
+  const lastDate=allDates[allDates.length-1];
+  const lastD=new Date(lastDate+'T12:00:00');
+  const todayD=new Date(today+'T12:00:00');
+  const diffToday=Math.round((todayD-lastD)/86400000);
+  if(diffToday>1) streak=0; // gap between last history and today
+  state.streak=streak;
 }
 
 // ── SPARKLINE ──
 function drawSparkline(){
-  const c=document.getElementById('sparklineCanvas'); if(!c)return;
-  const ctx=c.getContext('2d'); const W=c.width,H=c.height; ctx.clearRect(0,0,W,H);
+  const c=document.getElementById('sparklineCanvas');if(!c)return;
+  const ctx=c.getContext('2d');const W=c.width,H=c.height;ctx.clearRect(0,0,W,H);
   const pts=[];
   for(let i=13;i>=1;i--){
-    const d=new Date(); d.setDate(d.getDate()-i);
+    const d=new Date();d.setDate(d.getDate()-i);
     const ds=`${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;
     const h=state.history[ds];
     pts.push({v:(h&&h.ifomScore!=null)?h.ifomScore:null});
@@ -497,36 +671,36 @@ function drawSparkline(){
   const valid=pts.filter(p=>p.v!==null);
   if(valid.length===0){ctx.font='10px Poppins,sans-serif';ctx.fillStyle='#b0aea5';ctx.fillText('No scores yet',6,H/2+4);return;}
   const pad={t:6,b:6,l:5,r:5},cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
-  const vals=valid.map(p=>p.v); let mn=Math.min(...vals),mx=Math.max(...vals);
+  const vals=valid.map(p=>p.v);let mn=Math.min(...vals),mx=Math.max(...vals);
   if(mn===mx){mn=Math.max(0,mn-5);mx=Math.min(100,mx+5);}
   const rng=mx-mn||1;
   const xOf=i=>pad.l+(i/(pts.length-1))*cW;
   const yOf=v=>pad.t+cH-((v-mn)/rng)*cH;
-  let fi=0; for(let i=0;i<pts.length;i++){if(pts[i].v!==null){fi=i;break;}}
-  let li=pts.length-1; for(let i=pts.length-1;i>=0;i--){if(pts[i].v!==null){li=i;break;}}
-  ctx.beginPath(); let started=false;
+  let fi=0;for(let i=0;i<pts.length;i++){if(pts[i].v!==null){fi=i;break;}}
+  let li=pts.length-1;for(let i=pts.length-1;i>=0;i--){if(pts[i].v!==null){li=i;break;}}
+  ctx.beginPath();let started=false;
   for(let i=0;i<pts.length;i++){
     if(pts[i].v===null){started=false;continue;}
     if(!started){ctx.moveTo(xOf(i),yOf(pts[i].v));started=true;}else ctx.lineTo(xOf(i),yOf(pts[i].v));
   }
-  ctx.lineTo(xOf(li),pad.t+cH); ctx.lineTo(xOf(fi),pad.t+cH); ctx.closePath();
+  ctx.lineTo(xOf(li),pad.t+cH);ctx.lineTo(xOf(fi),pad.t+cH);ctx.closePath();
   const grad=ctx.createLinearGradient(0,pad.t,0,pad.t+cH);
-  grad.addColorStop(0,'rgba(106,155,204,0.2)'); grad.addColorStop(1,'rgba(106,155,204,0)');
-  ctx.fillStyle=grad; ctx.fill();
-  ctx.beginPath(); started=false;
+  grad.addColorStop(0,'rgba(106,155,204,0.2)');grad.addColorStop(1,'rgba(106,155,204,0)');
+  ctx.fillStyle=grad;ctx.fill();
+  ctx.beginPath();started=false;
   for(let i=0;i<pts.length;i++){
     if(pts[i].v===null){started=false;continue;}
     if(!started){ctx.moveTo(xOf(i),yOf(pts[i].v));started=true;}else ctx.lineTo(xOf(i),yOf(pts[i].v));
   }
-  ctx.strokeStyle='#6a9bcc'; ctx.lineWidth=1.6; ctx.lineJoin='round'; ctx.stroke();
+  ctx.strokeStyle='#6a9bcc';ctx.lineWidth=1.6;ctx.lineJoin='round';ctx.stroke();
   valid.forEach(p=>{
     const i=pts.indexOf(p),isLast=i===li;
     const x=xOf(i),y=yOf(p.v);
-    ctx.beginPath(); ctx.arc(x,y,isLast?4:2.5,0,Math.PI*2);
-    ctx.fillStyle=isLast?'#d97757':'#6a9bcc'; ctx.fill();
+    ctx.beginPath();ctx.arc(x,y,isLast?4:2.5,0,Math.PI*2);
+    ctx.fillStyle=isLast?'#d97757':'#6a9bcc';ctx.fill();
     if(isLast){
-      ctx.strokeStyle='#faf9f5'; ctx.lineWidth=1.5; ctx.stroke();
-      ctx.font=`bold 9px 'DM Mono',monospace`; ctx.fillStyle='#d97757';
+      ctx.strokeStyle='#faf9f5';ctx.lineWidth=1.5;ctx.stroke();
+      ctx.font=`bold 9px 'DM Mono',monospace`;ctx.fillStyle='#d97757';
       const lbl=`${Math.round(p.v)}%`,lw=ctx.measureText(lbl).width;
       ctx.fillText(lbl,Math.min(x-lw/2,W-pad.r-lw),y>pad.t+12?y-7:y+14);
     }
@@ -536,13 +710,13 @@ function drawSparkline(){
 // ── HEATMAP ──
 function drawHeatmap(){
   const container=document.getElementById('hmGrid');
-  if(container) container.innerHTML=buildHeatmapRows();
+  if(container)container.innerHTML=buildHeatmapRows();
 }
 function buildHeatmapRows(){
   const today=todayStr();
   const days=[];
   for(let i=29;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days.push(`${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`);}
-  const tasks=(state.tier2Tasks||[]);
+  const tasks=state.tier2Tasks||[];
   let html=`<div class="hm-row"><div class="hm-label"></div>`;
   days.forEach((d,i)=>{
     const show=i===0||i===6||i===13||i===20||i===29;
@@ -555,8 +729,8 @@ function buildHeatmapRows(){
     days.forEach(d=>{
       const isToday=d===today;
       let done=false;
-      if(isToday){ done=getTaskDone(task.key,2); }
-      else { const h=state.history[d]; if(h&&h.tier2) done=!!h.tier2[task.key]; }
+      if(isToday){done=getTaskDone(task.key,2);}
+      else{const h=state.history[d];if(h&&h.tier2)done=!!h.tier2[task.key];}
       html+=`<div class="hm-cell${done?' hm-done':''}${isToday?' hm-today':''}"></div>`;
     });
     html+=`</div>`;
@@ -566,18 +740,18 @@ function buildHeatmapRows(){
 
 // ── COUNTDOWNS ──
 function updateCountdowns(){
-  const now=new Date(); now.setHours(0,0,0,0);
+  const now=new Date();now.setHours(0,0,0,0);
   [['cdRace',TARGETS.race],['cdIFOM',TARGETS.ifom],['cdGrad',TARGETS.grad]].forEach(([id,t])=>{
-    const td=new Date(t); td.setHours(0,0,0,0);
+    const td=new Date(t);td.setHours(0,0,0,0);
     const el=document.getElementById(id);
-    if(el) el.textContent=Math.max(0,Math.ceil((td-now)/86400000));
+    if(el)el.textContent=Math.max(0,Math.ceil((td-now)/86400000));
   });
 }
 
 // ── RENDER ──
 function render(){
   const today=new Date(),d=dow();
-  document.getElementById('dateDisplay').textContent=`${DAYS_FULL[d]}, ${MONTHS[today.getMonth()]} ${today.getDate()}`;
+  document.getElementById('dateDisplay').textContent=`${DAYS_FULL[d]}, ${MONTHS_FULL[today.getMonth()]} ${today.getDate()}`;
   const s=state.streak;
   document.getElementById('streakCount').innerHTML=(s>=3?'🔥':'')+s;
   const mc=document.getElementById('mainContent');
@@ -591,129 +765,101 @@ function render(){
   }
   html+=renderHeatmapSection();
   mc.innerHTML=html;
-
   const inp=document.getElementById('ifomScoreInput');
   if(inp){
     inp.addEventListener('input',e=>setIfomScore(e.target.value));
     inp.addEventListener('click',e=>e.stopPropagation());
     inp.addEventListener('keydown',e=>e.stopPropagation());
   }
-  if(state.tier2.timerRunning&&!timerIv) runTimerIv();
-  updateTimerEl(); updateCountdowns(); drawSparkline();
+  if(state.tier2.timerRunning&&!timerIv)runTimerIv();
+  updateTimerEl();updateCountdowns();drawSparkline();
 }
 
 // ── RENDER HELPERS ──
 function renderRestBanner(){
   return `<div class="rest-banner"><div class="rest-banner-title">Rest Day 🌿</div><div class="rest-banner-sub">No essentials today. All tiers unlocked. Recover well.</div></div>`;
 }
-
 function renderTier1(){
   const t1=state.tier1,cfg=DAY_CFG[dow()],done=t1Done();
   const customs=(state.customTasks||[]).filter(c=>c.tier===1);
   let items=chkFixed('ifom',t1.ifom,'50 IFOM questions + review','t1Toggle');
-  if(t1.ifom) items+=`<div class="ifom-score-row"><span class="ifom-score-label">Score:</span><input type="number" class="ifom-score-input" id="ifomScoreInput" value="${t1.ifomScore}" min="0" max="100" placeholder="0–100"/><span class="ifom-score-pct">%</span></div>`;
-  if(cfg==='gym') items+=chkFixed('gym',t1.gym,'Gym session','t1Toggle');
-  else if(cfg==='both') items+=`<div class="gr-row">${chkFixed('gym',t1.gym,'Gym','t1Toggle')}${chkFixed('run',t1.run,'Run','t1Toggle')}</div><p class="gr-hint">Either counts · both can be marked</p>`;
+  if(t1.ifom)items+=`<div class="ifom-score-row"><span class="ifom-score-label">Score:</span><input type="number" class="ifom-score-input" id="ifomScoreInput" value="${t1.ifomScore}" min="0" max="100" placeholder="0–100"/><span class="ifom-score-pct">%</span></div>`;
+  if(cfg==='gym')items+=chkFixed('gym',t1.gym,'Gym session','t1Toggle');
+  else if(cfg==='both')items+=`<div class="gr-row">${chkFixed('gym',t1.gym,'Gym','t1Toggle')}${chkFixed('run',t1.run,'Run','t1Toggle')}</div><p class="gr-hint">Either counts · both can be marked</p>`;
   items+=chkFixed('whatsapp',t1.whatsapp,'WhatsApp cleared','t1Toggle');
-  customs.forEach(c=>{ items+=chkT1Custom(c.id,!!(t1.custom&&t1.custom[c.id]),c.label); });
+  customs.forEach(c=>items+=chkT1Custom(c.id,!!(t1.custom&&t1.custom[c.id]),c.label));
   items+=addTaskArea(1);
   const congrats=done?`<div class="success-notice"><span style="font-size:16px;">✓</span><span class="success-notice-text">All essentials done. Tier 2 is unlocked.</span></div>`:'';
   return `<div class="tier-card"><div class="tier-header-bar"><div class="tier-badge t1">Tier 1</div><div class="tier-title">Essentials</div><div class="tier-subtitle">${done?'✓ Complete':'Complete all to unlock Tier 2'}</div></div><div class="tier-body">${items}${congrats}</div></div>`;
 }
-
 function renderTier2(unlocked){
-  const t2=state.tier2,td=timerDone();
+  const t2=state.tier2,td=timerDone(),count=t2DoneCount(),total=(state.tier2Tasks||[]).length;
   const lockNote=!unlocked?`<div class="lock-notice"><div class="lock-notice-icon">🔒</div><div class="lock-notice-text"><strong>Locked.</strong> Complete all Tier 1 essentials first.</div></div>`:'';
+  // Progress hint toward Tier 3 via task count
+  let progressNote='';
+  if(unlocked&&!td&&count>0&&count<3){
+    const need=3-count;
+    progressNote=`<div class="partial-notice"><div class="partial-notice-text">🔵 ${count}/${Math.min(3,total)} tasks done — complete ${need} more to unlock Tier 3 early.</div></div>`;
+  }
   let items=(state.tier2Tasks||[]).map(task=>chkEditable(task,getTaskDone(task.key,2),!unlocked,2)).join('');
   items+=addTaskArea(2);
   let timerHtml='';
   if(unlocked){
     let btns='';
-    if(td)                   btns=`<span style="font-size:12px;font-weight:600;color:var(--green);">✓ Tier 3 unlocked</span>`;
-    else if(t2.timerRunning) btns=`<button class="btn btn-g" id="t2PauseBtn" onclick="pauseTimer()">⏸ Pause</button>`;
-    else                     btns=`<button class="btn btn-p" id="t2StartBtn" onclick="startTimer()">${t2.timerRemaining===TIMER_FULL?'▶ Start 60-min Focus':'▶ Resume'}</button>`;
-    timerHtml=`<div class="timer-section"><div class="timer-label">Focus Timer · unlocks Tier 3</div><div class="timer-row"><div class="timer-clock${t2.timerRunning?' running':''}${td?' done':''}" id="timerClock">${fmtTime(t2.timerRemaining)}</div><div style="display:flex;gap:8px;align-items:center;">${btns}</div></div></div>`;
+    if(td)btns=`<span style="font-size:12px;font-weight:600;color:var(--green);">✓ Tier 3 unlocked</span>`;
+    else if(t2.timerRunning)btns=`<button class="btn btn-g" id="t2PauseBtn" onclick="pauseTimer()">⏸ Pause</button>`;
+    else btns=`<button class="btn btn-p" id="t2StartBtn" onclick="startTimer()">${t2.timerRemaining===TIMER_FULL?'▶ Start 60-min Focus':'▶ Resume'}</button>`;
+    timerHtml=`<div class="timer-section"><div class="timer-label">Focus Timer · also unlocks Tier 3</div><div class="timer-row"><div class="timer-clock${t2.timerRunning?' running':''}${td?' done':''}" id="timerClock">${fmtTime(t2.timerRemaining)}</div><div style="display:flex;gap:8px;align-items:center;">${btns}</div></div></div>`;
   }
-  return `<div class="tier-card${!unlocked?' locked-tier':''} ${unlocked?'unlock-pop':''}"><div class="tier-header-bar"><div class="tier-badge ${unlocked?'t2':'tlock'}">${unlocked?'Tier 2':'🔒 Tier 2'}</div><div class="tier-title">Deep Work</div><div class="tier-subtitle">${unlocked?(td?'✓ Timer complete':'Start timer to unlock Tier 3'):'Locked'}</div></div><div class="tier-body">${lockNote}${items}${timerHtml}</div></div>`;
+  return `<div class="tier-card${!unlocked?' locked-tier':''} ${unlocked?'unlock-pop':''}"><div class="tier-header-bar"><div class="tier-badge ${unlocked?'t2':'tlock'}">${unlocked?'Tier 2':'🔒 Tier 2'}</div><div class="tier-title">Deep Work</div><div class="tier-subtitle">${unlocked?(td||count>=3?'✓ Tier 3 unlocked':'3 tasks or 60-min timer'):'Locked'}</div></div><div class="tier-body">${lockNote}${progressNote}${items}${timerHtml}</div></div>`;
 }
-
 function renderTier3(unlocked,animate){
-  const lockNote=!unlocked?`<div class="lock-notice"><div class="lock-notice-icon">🔒</div><div class="lock-notice-text"><strong>Locked.</strong> Let the Tier 2 focus timer reach zero.</div></div>`:'';
+  const lockMsg=t2DoneCount()>=3
+    ?'Let the Tier 2 focus timer reach zero, or complete 3 tasks.'
+    :'Complete 3 Tier 2 tasks, or let the focus timer reach zero.';
+  const lockNote=!unlocked?`<div class="lock-notice"><div class="lock-notice-icon">🔒</div><div class="lock-notice-text"><strong>Locked.</strong> ${lockMsg}</div></div>`:'';
   let items=(state.tier3Tasks||[]).map(task=>chkEditable(task,getTaskDone(task.key,3),!unlocked,3)).join('');
   items+=addTaskArea(3);
   return `<div class="tier-card${!unlocked?' locked-tier':''}${animate?' unlock-pop':''}"><div class="tier-header-bar"><div class="tier-badge ${unlocked?'t3':'tlock'}">${unlocked?'Tier 3':'🔒 Tier 3'}</div><div class="tier-title">Recreation</div><div class="tier-subtitle">${unlocked?'Earned.':'Locked'}</div></div><div class="tier-body">${lockNote}${items}</div></div>`;
 }
-
 function renderHeatmapSection(){
   return `<div class="heatmap-section"><div class="tier-card"><div class="tier-header-bar"><div class="tier-badge t2">Tier 2</div><div class="tier-title">Deep Work Habits</div><div class="tier-subtitle">Last 30 days</div></div><div class="tier-body"><div class="hm-outer"><div class="hm-grid" id="hmGrid">${buildHeatmapRows()}</div></div><div class="hm-legend"><div class="hm-legend-item"><div class="hm-legend-cell" style="background:var(--green);"></div>Completed</div><div class="hm-legend-item"><div class="hm-legend-cell" style="background:var(--surface-3);border:1px solid var(--border);"></div>Not done</div><div class="hm-legend-item"><div class="hm-legend-cell" style="background:var(--surface-3);box-shadow:0 0 0 2px var(--accent);"></div>Today</div></div></div></div></div>`;
 }
 
 // ── ITEM BUILDERS ──
-function chkSvg(){ return `<svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 3.5L3.5 6.5L9 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`; }
-
-// Fixed Tier-1 built-in item (no edit/delete)
-function chkFixed(field, checked, label, toggleFn){
-  const cls='check-item'+(checked?' done':'');
-  return `<div class="${cls}" onclick="${toggleFn}('${field}')"><div class="check-box">${checked?chkSvg():''}</div><div class="check-label">${label}</div></div>`;
+function chkSvg(){return `<svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 3.5L3.5 6.5L9 1" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;}
+function chkFixed(field,checked,label,toggleFn){
+  return `<div class="check-item${checked?' done':''}" onclick="${toggleFn}('${field}')"><div class="check-box">${checked?chkSvg():''}</div><div class="check-label">${label}</div></div>`;
 }
-
-// Tier-1 custom item (delete only, no rename)
-function chkT1Custom(id, checked, label){
-  const cls='check-item'+(checked?' done':'');
-  return `<div class="${cls}" id="ct1-${id}" onclick="ctToggle1('${id}')">
-    <div class="check-box">${checked?chkSvg():''}</div>
-    <div class="check-label">${label}</div>
-    <div class="item-actions">
-      <button class="ibtn ibtn-r" onclick="deleteCustomT1('${id}');event.stopPropagation();" title="Delete">×</button>
-    </div>
-  </div>`;
+function chkT1Custom(id,checked,label){
+  return `<div class="check-item${checked?' done':''}" id="ct1-${id}" onclick="ctToggle1('${id}')"><div class="check-box">${checked?chkSvg():''}</div><div class="check-label">${label}</div><div class="item-actions"><button class="ibtn ibtn-r" onclick="deleteCustomT1('${id}');event.stopPropagation();" title="Delete">×</button></div></div>`;
 }
-
-// Tier-2 / Tier-3 item: full edit + delete, or inline edit form
-function chkEditable(task, checked, locked, tier){
-  const isEditing = editTask && editTask.tier===tier && editTask.key===task.key;
+function chkEditable(task,checked,locked,tier){
+  const isEditing=editTask&&editTask.tier===tier&&editTask.key===task.key;
   const cls='check-item'+(checked?' done':'')+(locked?' locked':'')+(isEditing?' editing':'');
-  const escapedLabel = task.label.replace(/"/g,'&quot;');
-
+  const escaped=task.label.replace(/"/g,'&quot;');
   if(isEditing){
-    return `<div class="${cls}">
-      <div class="check-box">${checked?chkSvg():''}</div>
-      <input type="text" class="inline-input" id="editInput" value="${escapedLabel}"
-        onkeydown="handleEditKey(event)" onclick="event.stopPropagation()"/>
-      <button class="ibtn ibtn-g" onclick="confirmEdit();event.stopPropagation();" title="Save">✓</button>
-      <button class="ibtn" onclick="cancelEdit();event.stopPropagation();" title="Cancel">✕</button>
-    </div>`;
+    return `<div class="${cls}"><div class="check-box">${checked?chkSvg():''}</div><input type="text" class="inline-input" id="editInput" value="${escaped}" onkeydown="handleEditKey(event)" onclick="event.stopPropagation()"/><button class="ibtn ibtn-g" onclick="confirmEdit();event.stopPropagation();" title="Save">✓</button><button class="ibtn" onclick="cancelEdit();event.stopPropagation();" title="Cancel">✕</button></div>`;
   }
-
   const oc=locked?'':`onclick="tierToggle(${tier},'${task.key}')"`;
-  return `<div class="${cls}" id="tk-${task.key}" ${oc}>
-    <div class="check-box">${checked?chkSvg():''}</div>
-    <div class="check-label">${task.label}</div>
-    <div class="item-actions">
-      <button class="ibtn" onclick="startEdit(${tier},'${task.key}');event.stopPropagation();" title="Rename">✎</button>
-      <button class="ibtn ibtn-r" onclick="deleteTaskFromTier(${tier},'${task.key}');event.stopPropagation();" title="Delete">×</button>
-    </div>
-  </div>`;
+  return `<div class="${cls}" id="tk-${task.key}" ${oc}><div class="check-box">${checked?chkSvg():''}</div><div class="check-label">${task.label}</div><div class="item-actions"><button class="ibtn" onclick="startEdit(${tier},'${task.key}');event.stopPropagation();" title="Rename">✎</button><button class="ibtn ibtn-r" onclick="deleteTaskFromTier(${tier},'${task.key}');event.stopPropagation();" title="Delete">×</button></div></div>`;
 }
-
-// Add task row / hint
 function addTaskArea(tier){
-  if(addTaskTier===tier){
-    return `<div class="add-task-row"><input type="text" class="inline-input" id="addTaskInput" placeholder="Task name..." onkeydown="handleAddKey(event)"/><button class="ibtn ibtn-g" onclick="confirmAdd()" title="Add">✓</button><button class="ibtn" onclick="cancelAdd()" title="Cancel">✕</button></div>`;
-  }
+  if(addTaskTier===tier)return `<div class="add-task-row"><input type="text" class="inline-input" id="addTaskInput" placeholder="Task name..." onkeydown="handleAddKey(event)"/><button class="ibtn ibtn-g" onclick="confirmAdd()" title="Add">✓</button><button class="ibtn" onclick="cancelAdd()" title="Cancel">✕</button></div>`;
   return `<div class="add-task-hint"><button class="ibtn ibtn-g" onclick="showAddForm(${tier})" style="font-size:10px;">+ Add task</button></div>`;
 }
 
 // ── MIDNIGHT ──
 function scheduleMidnight(){
-  if(midnightTmr) clearTimeout(midnightTmr);
+  if(midnightTmr)clearTimeout(midnightTmr);
   const now=new Date();
   const ms=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1,0,0,1)-now;
   midnightTmr=setTimeout(()=>{if(timerIv){clearInterval(timerIv);timerIv=null;}loadState();render();scheduleMidnight();},ms);
 }
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeHistoryModal();});
 
 // ── INIT ──
-function init(){ loadState(); render(); scheduleMidnight(); setInterval(updateCountdowns,60000); }
+function init(){loadState();render();scheduleMidnight();setInterval(updateCountdowns,60000);}
 init();
 </script>
 </body>
