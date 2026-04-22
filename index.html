@@ -295,6 +295,8 @@ function schedulePush(){
 
 async function loadFromSupabase(){
   setSyncStatus('syncing');
+  // Did this device have any prior localStorage state?
+  const hadLocalData = !!localStorage.getItem(STORAGE_KEY);
   try{
     const {data,error}=await sb.from('daily_os_state')
       .select('state,updated_at')
@@ -305,11 +307,11 @@ async function loadFromSupabase(){
       const remote=data.state;
       const localTs  = state.updatedAt  || 0;
       const remoteTs = remote.updatedAt || 0;
-      if(remoteTs > localTs){
-        // Remote is newer — apply it
+      if(!hadLocalData || remoteTs > localTs){
+        // New device OR remote is genuinely newer — always apply remote
         applyRemoteState(remote);
       } else {
-        // Local is newer or equal — push local up
+        // Local is newer — push up
         await pushToSupabase();
       }
     } else {
@@ -409,7 +411,7 @@ function defaultState(){
     customTasks:[],
     tier2Tasks:T2_DEFAULTS.map(t=>({...t})),
     tier3Tasks:T3_DEFAULTS.map(t=>({...t})),
-    updatedAt:Date.now()
+    updatedAt:0  // 0 = never saved locally; always defer to Supabase on first load
   };
 }
 function todayStr(){ const d=new Date(); return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`; }
