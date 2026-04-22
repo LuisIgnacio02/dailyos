@@ -199,6 +199,146 @@ body{background:var(--bg);color:var(--t1);font-family:var(--sans);font-size:13px
 .unlock-pop{animation:unlockPop 0.22s ease;}
 input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;}
 input[type=number]{-moz-appearance:textfield;}
+
+/* ══════════════════════════════════════════
+   MOBILE  —  iPhone 15  (≤ 430px)
+   ══════════════════════════════════════════ */
+@media (max-width: 430px) {
+
+  /* ── Body ── */
+  body { font-size: 14px; padding-bottom: 160px; }
+
+  /* ── Header: two-row stack ── */
+  .g-header {
+    height: auto;
+    flex-wrap: wrap;
+    padding: 10px 16px;
+    gap: 0;
+    row-gap: 8px;
+  }
+  /* Row 1: brand + streak side by side */
+  .hdr-brand { flex: 1; }
+  .brand-meta { font-size: 8px; }
+  .brand-name { font-size: 15px; }
+  .hdr-stats { border: none; }
+  .hdr-stat {
+    border: none !important;
+    padding: 0 0 0 14px;
+    flex-direction: row;
+    gap: 7px;
+    align-items: center;
+  }
+  .hdr-stat-n { font-size: 20px; }
+  .hdr-stat-l { font-size: 8px; margin-top: 0; }
+  /* Row 2: sync dot + action buttons, full width */
+  .hdr-actions {
+    width: 100%;
+    justify-content: flex-end;
+    padding-bottom: 4px;
+  }
+  .hdr-actions .btn { font-size: 11px; padding: 6px 12px; height: 32px; }
+  /* Sync indicator inline with actions */
+  #syncDot { width: 6px; height: 6px; }
+  .sync-label { font-size: 8px; }
+
+  /* ── Main grid: single column, tighter padding ── */
+  .main-content { padding: 14px 12px 24px; gap: 12px; }
+
+  /* ── Tier cards ── */
+  .tier-header-bar { padding: 12px 14px 11px; }
+  .tier-badge { font-size: 8px; padding: 2px 8px; }
+  .tier-title { font-size: 14px; }
+  .tier-subtitle { font-size: 10px; }
+  .tier-body { padding: 12px 14px; }
+
+  /* ── Check items: larger touch targets ── */
+  .check-item {
+    padding: 12px 11px;
+    margin-bottom: 8px;
+    min-height: 48px;
+  }
+  .check-box { width: 20px; height: 20px; border-radius: 5px; }
+  .check-label { font-size: 14px; }
+  /* Always show item-actions on mobile (no hover) */
+  .check-item .item-actions { opacity: 1; }
+  .ibtn { padding: 5px 10px; font-size: 12px; min-height: 30px; }
+
+  /* ── Gym/Run row ── */
+  .gr-hint { font-size: 11px; }
+
+  /* ── IFOM score row ── */
+  .ifom-score-row { padding-left: 42px; }
+  .ifom-score-input { width: 86px !important; font-size: 14px !important; padding: 6px 8px !important; }
+
+  /* ── Timer ── */
+  .timer-clock { font-size: 36px; min-width: 100px; }
+  .btn-p, .btn-g { padding: 9px 18px; font-size: 12px; min-height: 44px; }
+
+  /* ── Lock notice ── */
+  .lock-notice { padding: 10px 12px; }
+  .lock-notice-text { font-size: 12px; }
+
+  /* ── Success / partial notice ── */
+  .success-notice { padding: 10px 12px; }
+  .partial-notice { padding: 9px 12px; }
+
+  /* ── Heatmap: smaller cells, shorter label ── */
+  .hm-label { width: 100px; min-width: 100px; font-size: 10px; padding-right: 8px; }
+  .hm-cell { width: 14px; height: 14px; border-radius: 2px; }
+  .hm-date-cell { width: 14px; font-size: 7px; }
+  .hm-legend { gap: 14px; flex-wrap: wrap; }
+  .hm-legend-item { font-size: 10px; }
+
+  /* ── Rest banner ── */
+  .rest-banner { padding: 28px 16px; }
+  .rest-banner-title { font-size: 22px; }
+
+  /* ── Bottom bar: two rows ── */
+  .bottom-bar {
+    height: auto;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 10px 16px 12px;
+    gap: 10px;
+  }
+  .sparkline-wrap {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding-right: 0;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+  }
+  #sparklineCanvas { width: 140px !important; height: 36px !important; }
+  .bar-divider { display: none; }
+  .cd-group { justify-content: space-between; }
+  .cditem { padding: 0 8px; }
+  .cd-days { font-size: 20px; }
+  .cd-label { font-size: 8px; }
+  .cd-date { font-size: 8px; }
+
+  /* ── History modal: full screen ── */
+  .overlay { padding: 0; align-items: flex-end; }
+  .modal {
+    border-radius: 16px 16px 0 0;
+    max-height: 92vh;
+    padding: 20px 16px 32px;
+    max-width: 100%;
+  }
+  .modal-title { font-size: 17px; margin-bottom: 14px; }
+  .day-pills { gap: 5px; margin-bottom: 14px; }
+  .day-pill { font-size: 11px; padding: 5px 10px; min-height: 34px; }
+  .hist-panel { padding: 12px; }
+  .hist-check { width: 22px; height: 22px; }
+  .hist-label { font-size: 14px; }
+  .m-actions { flex-wrap: wrap; gap: 8px; }
+  .m-actions .btn { flex: 1; justify-content: center; min-height: 44px; }
+  #streakResult { width: 100%; }
+
+  /* ── Add task ── */
+  .inline-input { font-size: 14px; padding: 8px 10px; min-height: 40px; }
+  .add-task-hint .ibtn { min-height: 36px; font-size: 12px; padding: 6px 12px; }
+}
 </style>
 </head>
 <body>
@@ -791,6 +931,9 @@ function recomputeStreak(){
 // ── SPARKLINE ──
 function drawSparkline(){
   const c=document.getElementById('sparklineCanvas');if(!c)return;
+  // Respect mobile CSS-resized canvas
+  const isMobile=window.innerWidth<=430;
+  if(isMobile){c.width=140;c.height=36;}else{c.width=210;c.height=48;}
   const ctx=c.getContext('2d');const W=c.width,H=c.height;ctx.clearRect(0,0,W,H);
   const pts=[];
   for(let i=13;i>=1;i--){
