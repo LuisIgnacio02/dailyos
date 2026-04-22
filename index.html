@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Daily OS · Luis Ignacio Cepeda Morales</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23d97757'/><path d='M7 10l2.5 2.5L14 7' stroke='white' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/><line x1='17' y1='10' x2='26' y2='10' stroke='white' stroke-width='1.8' stroke-linecap='round'/><path d='M7 17l2.5 2.5L14 14' stroke='white' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/><line x1='17' y1='17' x2='24' y2='17' stroke='white' stroke-width='1.8' stroke-linecap='round'/><path d='M7 24l2.5 2.5L14 21' stroke='white' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/><line x1='17' y1='24' x2='21' y2='24' stroke='white' stroke-width='1.8' stroke-linecap='round'/></svg>">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -34,6 +35,14 @@ body{background:var(--bg);color:var(--t1);font-family:var(--sans);font-size:13px
 .hdr-stat-n{font-family:var(--serif);font-size:26px;font-weight:600;color:var(--t1);line-height:1;}
 .hdr-stat-l{font-size:9px;color:var(--t3);letter-spacing:0.12em;margin-top:2px;text-transform:uppercase;font-weight:600;}
 .hdr-actions{display:flex;gap:8px;align-items:center;}
+
+/* ── SYNC INDICATOR ── */
+.sync-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;transition:background 0.3s;}
+.sync-dot.synced{background:#788c5d;}
+.sync-dot.syncing{background:#d97757;animation:pulse 1s infinite;}
+.sync-dot.error{background:#dc2626;}
+.sync-label{font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--t4);}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.35}}
 
 /* ── MAIN GRID ── */
 .main-content{max-width:1280px;margin:0 auto;padding:28px 24px 40px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;align-items:start;}
@@ -205,6 +214,10 @@ input[type=number]{-moz-appearance:textfield;}
       <div class="hdr-stat-l">Day Streak</div>
     </div>
   </div>
+  <div style="display:flex;align-items:center;gap:7px;padding:0 16px;">
+    <div class="sync-dot synced" id="syncDot"></div>
+    <span class="sync-label" id="syncLabel">Synced</span>
+  </div>
   <div class="hdr-actions">
     <button class="btn btn-g" onclick="openHistoryModal()" style="font-size:10px;padding:5px 14px;height:34px;">📅 History</button>
     <button class="btn btn-g" onclick="exportJSON()" style="font-size:10px;padding:5px 14px;height:34px;">⬇ Export</button>
@@ -242,6 +255,116 @@ input[type=number]{-moz-appearance:textfield;}
 </footer>
 
 <script>
+// ── SUPABASE ──
+const SUPABASE_URL  = 'https://rrkrhhrqxzyvovxbjyvn.supabase.co';
+const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJya3JoaHJxeHp5dm92eGJqeXZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4MDk4ODgsImV4cCI6MjA5MjM4NTg4OH0.1a2XK38g7vMj55f6a955a7S9BfIoSvh-3tT7SoZRf2s';
+const DB_USER_ID    = 'licm';
+const WRITE_SECRET  = 'dos-7f3a9b2e';
+const sb            = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let syncDebounce    = null;
+let realtimeChannel = null;
+
+function setSyncStatus(status){ // 'syncing'|'synced'|'error'
+  const dot=document.getElementById('syncDot');
+  const lbl=document.getElementById('syncLabel');
+  if(!dot||!lbl)return;
+  dot.className='sync-dot '+status;
+  lbl.textContent=status==='syncing'?'Syncing…':status==='error'?'Offline':'Synced';
+}
+
+async function pushToSupabase(){
+  setSyncStatus('syncing');
+  try{
+    const {error}=await sb.from('daily_os_state').upsert({
+      user_id: DB_USER_ID,
+      state: {...state, writeSecret: WRITE_SECRET},
+      updated_at: new Date().toISOString()
+    },{onConflict:'user_id'});
+    if(error) throw error;
+    setSyncStatus('synced');
+  } catch(e){
+    console.error('Supabase push failed',e);
+    setSyncStatus('error');
+  }
+}
+
+function schedulePush(){
+  if(syncDebounce) clearTimeout(syncDebounce);
+  syncDebounce=setTimeout(pushToSupabase, 600);
+}
+
+async function loadFromSupabase(){
+  setSyncStatus('syncing');
+  try{
+    const {data,error}=await sb.from('daily_os_state')
+      .select('state,updated_at')
+      .eq('user_id',DB_USER_ID)
+      .single();
+    if(error&&error.code!=='PGRST116') throw error; // PGRST116 = no row
+    if(data&&data.state){
+      const remote=data.state;
+      const localTs  = state.updatedAt  || 0;
+      const remoteTs = remote.updatedAt || 0;
+      if(remoteTs > localTs){
+        // Remote is newer — apply it
+        applyRemoteState(remote);
+      } else {
+        // Local is newer or equal — push local up
+        await pushToSupabase();
+      }
+    } else {
+      // No remote row yet — push local
+      await pushToSupabase();
+    }
+    setSyncStatus('synced');
+  } catch(e){
+    console.error('Supabase load failed',e);
+    setSyncStatus('error');
+  }
+  subscribeRealtime();
+}
+
+function applyRemoteState(remote){
+  if(!remote||typeof remote!=='object') return;
+  // Only apply if it's the same day or we have no local data
+  const today=todayStr();
+  if(remote.date&&remote.date!==today){
+    // Remote is from a different day — run through loadState logic instead
+    // Just push our current state; midnight logic will handle rollover
+    return;
+  }
+  // Merge: keep timer running state from whichever has more progress
+  const localTimer=state.tier2&&state.tier2.timerRunning;
+  Object.assign(state, remote);
+  // If local timer was running and remote says it was paused, keep running
+  if(localTimer&&state.tier2&&!state.tier2.timerRunning&&state.tier2.timerEnd){
+    // Do nothing — remote already has better state
+  }
+  saveLocalOnly();
+  render();
+  if(state.tier2&&state.tier2.timerRunning&&!timerIv) runTimerIv();
+}
+
+function subscribeRealtime(){
+  if(realtimeChannel) sb.removeChannel(realtimeChannel);
+  realtimeChannel=sb.channel('daily-os-sync')
+    .on('postgres_changes',{
+      event:'UPDATE', schema:'public', table:'daily_os_state',
+      filter:`user_id=eq.${DB_USER_ID}`
+    }, payload=>{
+      const remote=payload.new&&payload.new.state;
+      if(!remote) return;
+      const localTs  = state.updatedAt  || 0;
+      const remoteTs = remote.updatedAt || 0;
+      // Only apply if remote is meaningfully newer (>1s gap to avoid echo)
+      if(remoteTs > localTs + 1000){
+        applyRemoteState(remote);
+        setSyncStatus('synced');
+      }
+    })
+    .subscribe();
+}
+
 // ── CONSTANTS ──
 const STORAGE_KEY = 'licm_daily_os_v5';
 const TIMER_FULL  = 3600;
@@ -285,7 +408,8 @@ function defaultState(){
     streak:0,history:{},
     customTasks:[],
     tier2Tasks:T2_DEFAULTS.map(t=>({...t})),
-    tier3Tasks:T3_DEFAULTS.map(t=>({...t}))
+    tier3Tasks:T3_DEFAULTS.map(t=>({...t})),
+    updatedAt:Date.now()
   };
 }
 function todayStr(){ const d=new Date(); return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`; }
@@ -342,7 +466,12 @@ function loadState(){
     }
   } catch(e){console.error('loadState',e);state=defaultState();}
 }
-function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){console.error(e);}}
+function saveLocalOnly(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){console.error(e);}}
+function saveState(){
+  state.updatedAt=Date.now();
+  saveLocalOnly();
+  schedulePush();
+}
 
 // ── DERIVED ──
 function dow(){ return new Date().getDay(); }
@@ -860,7 +989,13 @@ function scheduleMidnight(){
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeHistoryModal();});
 
 // ── INIT ──
-function init(){loadState();render();scheduleMidnight();setInterval(updateCountdowns,60000);}
+function init(){
+  loadState();
+  render();
+  scheduleMidnight();
+  setInterval(updateCountdowns,60000);
+  loadFromSupabase(); // async — applies remote state if newer
+}
 init();
 </script>
 </body>
