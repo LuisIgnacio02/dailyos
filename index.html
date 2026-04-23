@@ -465,201 +465,175 @@ function setSyncStatus(status){
   ['syncLabel','syncLabelMobile'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=txt;});
 }
 
-// Track the last remote updatedAt this device saw — used as optimistic lock
-let lastKnownRemoteTs = 0;
-
-async function fetchRemote(){
-  const {data,error}=await sb.from('daily_os_state')
-    .select('state,updated_at')
-    .eq('user_id',DB_USER_ID)
-    .single();
-  if(error&&error.code!=='PGRST116') throw error;
-  return data||null;
-}
-
-// Merge two states, keeping the most data from both.
-// Neither device's progress is discarded.
-function mergeStates(local, remote){
-  const today=todayStr();
-
-  // Always keep the fuller history (union of all keys)
-  const mergedHistory = Object.assign({}, remote.history||{}, local.history||{});
-  // For days present in both, keep the one marked completed=true
-  Object.keys(mergedHistory).forEach(d=>{
-    const l=(local.history||{})[d], r=(remote.history||{})[d];
-    if(l&&r) mergedHistory[d]={ ...r, ...l, completed: l.completed||r.completed };
+// ── MERGE ──
+// Core rule: for checkboxes, true wins over false. For numbers, more progress wins.
+// For history, union. For streak, max. For task lists, local wins (preserves user edits).
+function mergeBools(a, b){
+  // Returns object where true wins on every boolean key
+  const out = {};
+  const keys = new Set([...Object.keys(a||{}), ...Object.keys(b||{})]);
+  keys.forEach(k=>{
+    const av=(a||{})[k], bv=(b||{})[k];
+    if(typeof av==='boolean'||typeof bv==='boolean') out[k]=(av===true||bv===true);
+    else out[k]=av!==undefined?av:bv;
   });
+  return out;
+}
+function mergeHistory(lh, rh){
+  const out = Object.assign({}, lh||{}, rh||{});
+  Object.keys(out).forEach(d=>{
+    const l=(lh||{})[d], r=(rh||{})[d];
+    if(l&&r) out[d]={ ...r, ...l, completed: !!(l.completed||r.completed) };
+  });
+  return out;
+}
+function mergeStates(local, remote){
+  if(!local) return remote;
+  if(!remote) return local;
+  const today = todayStr();
 
-  // Streak: take the higher value
-  const streak = Math.max(local.streak||0, remote.streak||0);
+  // Task definitions: local always wins (user may have renamed/added)
+  const tier2Tasks  = (local.tier2Tasks&&local.tier2Tasks.length)  ? local.tier2Tasks  : (remote.tier2Tasks||[]);
+  const tier3Tasks  = (local.tier3Tasks&&local.tier3Tasks.length)  ? local.tier3Tasks  : (remote.tier3Tasks||[]);
+  const customTasks = (local.customTasks&&local.customTasks.length)? local.customTasks : (remote.customTasks||[]);
+  const history     = mergeHistory(local.history, remote.history);
+  const streak      = Math.max(local.streak||0, remote.streak||0);
 
-  // Task definitions: prefer local (user may have renamed/added on this device)
-  const tier2Tasks  = local.tier2Tasks  || remote.tier2Tasks;
-  const tier3Tasks  = local.tier3Tasks  || remote.tier3Tasks;
-  const customTasks = local.customTasks || remote.customTasks;
+  // Determine which side is "today" for checkbox data
+  const lToday = local.date===today;
+  const rToday = remote.date===today;
 
-  if(local.date===today && remote.date===today){
-    // Both are today — merge checkbox state: a task is done if EITHER device did it
-    const merged = Object.assign({}, remote, local);
-    merged.history     = mergedHistory;
-    merged.streak      = streak;
-    merged.tier2Tasks  = tier2Tasks;
-    merged.tier3Tasks  = tier3Tasks;
-    merged.customTasks = customTasks;
+  if(lToday && rToday){
+    // Both today: union every checkbox field
+    const t1 = mergeBools(local.tier1, remote.tier1);
+    // Preserve non-bool tier1 fields
+    t1.ifomScore  = local.tier1&&local.tier1.ifomScore  ? local.tier1.ifomScore  : (remote.tier1&&remote.tier1.ifomScore)||'';
+    t1.custom     = mergeBools((local.tier1||{}).custom, (remote.tier1||{}).custom);
 
-    // Tier1 — union of checked fields
-    merged.tier1 = Object.assign({}, remote.tier1||{}, local.tier1||{});
-    merged.tier1.custom = Object.assign({}, (remote.tier1||{}).custom||{}, (local.tier1||{}).custom||{});
+    const t2 = mergeBools(local.tier2, remote.tier2);
+    t2.custom = mergeBools((local.tier2||{}).custom, (remote.tier2||{}).custom);
+    // Timer: keep most progress (lowest remaining)
+    const lRem = (local.tier2&&local.tier2.timerRemaining!=null) ? local.tier2.timerRemaining : TIMER_FULL;
+    const rRem = (remote.tier2&&remote.tier2.timerRemaining!=null)? remote.tier2.timerRemaining: TIMER_FULL;
+    t2.timerRemaining = Math.min(lRem, rRem);
+    t2.timerRunning   = !!(local.tier2&&local.tier2.timerRunning) || !!(remote.tier2&&remote.tier2.timerRunning);
+    t2.timerEnd       = t2.timerRunning ? Date.now()+t2.timerRemaining*1000 : null;
 
-    // Tier2 — union
-    merged.tier2 = Object.assign({}, remote.tier2||{}, local.tier2||{});
-    merged.tier2.custom = Object.assign({}, (remote.tier2||{}).custom||{}, (local.tier2||{}).custom||{});
-    // Timer: keep whichever has less time remaining (more progress)
-    const lRem = local.tier2&&local.tier2.timerRemaining!=null ? local.tier2.timerRemaining : TIMER_FULL;
-    const rRem = remote.tier2&&remote.tier2.timerRemaining!=null ? remote.tier2.timerRemaining : TIMER_FULL;
-    merged.tier2.timerRemaining = Math.min(lRem, rRem);
-    if(merged.tier2.timerRemaining < TIMER_FULL && merged.tier2.timerRemaining > 0){
-      // Preserve whichever running state was active
-      merged.tier2.timerRunning = local.tier2.timerRunning || remote.tier2.timerRunning;
-    }
+    const t3 = mergeBools(local.tier3, remote.tier3);
+    t3.custom = mergeBools((local.tier3||{}).custom, (remote.tier3||{}).custom);
 
-    // Tier3 — union
-    merged.tier3 = Object.assign({}, remote.tier3||{}, local.tier3||{});
-    merged.tier3.custom = Object.assign({}, (remote.tier3||{}).custom||{}, (local.tier3||{}).custom||{});
-
-    return merged;
+    return { date:today, tier1:t1, tier2:t2, tier3:t3, streak, history, tier2Tasks, tier3Tasks, customTasks, updatedAt:Date.now() };
   }
 
-  // One or both are from a different day — keep today's fresh checkboxes,
-  // but rescue history/streak/tasks from whichever is older
-  const todayBase = local.date===today ? local : remote;
-  const oldBase   = local.date===today ? remote : local;
-  return Object.assign({}, todayBase, {
-    history:     mergedHistory,
-    streak,
-    tier2Tasks,
-    tier3Tasks,
-    customTasks
-  });
+  // At least one side is from a different day.
+  // Today's checkboxes always stay fresh; carry over meta from whichever is richer.
+  const base = lToday ? local : (rToday ? remote : { ...defaultDayState(), date:today });
+  return { ...base, streak, history, tier2Tasks, tier3Tasks, customTasks, updatedAt:Date.now() };
 }
 
+// ── PUSH (simple — no read-before-write) ──
 async function pushToSupabase(){
   setSyncStatus('syncing');
   try{
-    // Conflict check: fetch current remote ts before writing
-    const current = await fetchRemote();
-    const remoteTs = (current&&current.state&&current.state.updatedAt)||0;
-
-    if(remoteTs > lastKnownRemoteTs && remoteTs > (state.updatedAt||0)){
-      // Remote was updated by another device since we last saw it — merge first
-      console.log('Conflict detected: merging before push');
-      const merged = mergeStates(state, current.state);
-      merged.updatedAt = Date.now();
-      state = merged;
-      saveLocalOnly();
-      render();
-      lastKnownRemoteTs = merged.updatedAt;
-    } else {
-      lastKnownRemoteTs = state.updatedAt||0;
-    }
-
     const {error}=await sb.from('daily_os_state').upsert({
-      user_id: DB_USER_ID,
-      state: {...state, writeSecret: WRITE_SECRET},
+      user_id:    DB_USER_ID,
+      state:      {...state, writeSecret:WRITE_SECRET},
       updated_at: new Date().toISOString()
     },{onConflict:'user_id'});
     if(error) throw error;
     setSyncStatus('synced');
   } catch(e){
-    console.error('Supabase push failed',e);
+    console.error('push failed',e);
     setSyncStatus('error');
   }
 }
 
 function schedulePush(){
   if(syncDebounce) clearTimeout(syncDebounce);
-  syncDebounce=setTimeout(pushToSupabase, 800);
+  syncDebounce=setTimeout(pushToSupabase, 700);
 }
 
+// ── LOAD (always merge on startup) ──
 async function loadFromSupabase(){
   setSyncStatus('syncing');
   const hadLocalData = !!localStorage.getItem(STORAGE_KEY);
   try{
-    const data = await fetchRemote();
+    const {data,error}=await sb.from('daily_os_state')
+      .select('state,updated_at').eq('user_id',DB_USER_ID).single();
+    if(error&&error.code!=='PGRST116') throw error;
     if(data&&data.state){
-      const remote=data.state;
-      const localTs  = state.updatedAt  || 0;
-      const remoteTs = remote.updatedAt || 0;
-      lastKnownRemoteTs = remoteTs;
-
+      const remote = data.state;
       if(!hadLocalData){
-        // Fresh device — always take remote, then push back to stamp updatedAt
-        applyRemoteState(remote);
-        await pushToSupabase();
-      } else if(remoteTs > localTs){
-        // Remote is newer — merge (don't blindly overwrite)
-        const merged = mergeStates(state, remote);
-        merged.updatedAt = Date.now();
-        state = merged;
-        saveLocalOnly();
-        render();
-        await pushToSupabase();
+        // Fresh device: take remote wholesale, stamp new updatedAt
+        state = { ...remote, updatedAt:Date.now() };
+        // Run through loadState-style day transition in case remote is old
+        const rDate = remote.date||'';
+        if(rDate !== todayStr()){
+          // Treat remote as yesterday's saved state
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+          loadState();
+        }
       } else {
-        // Local is newer — push up
-        await pushToSupabase();
+        // Existing device: always merge — no data lost either way
+        const merged = mergeStates(state, remote);
+        state = merged;
       }
+      saveLocalOnly();
+      render();
+      // Push merged result back so other devices get it too
+      await pushToSupabase();
     } else {
       // No remote row yet — push local
       await pushToSupabase();
     }
     setSyncStatus('synced');
   } catch(e){
-    console.error('Supabase load failed',e);
+    console.error('load failed',e);
     setSyncStatus('error');
   }
   subscribeRealtime();
+  // Periodic re-sync every 60s to catch missed realtime events
+  setInterval(periodicSync, 60000);
 }
 
-function applyRemoteState(remote){
-  if(!remote||typeof remote!=='object') return;
-  const today=todayStr();
-
-  if(remote.date && remote.date!==today){
-    // Remote is from a previous day — rescue history/streak/tasks
-    if((remote.streak||0) >= (state.streak||0)) state.streak = remote.streak||0;
-    Object.assign(state.history, remote.history||{});
-    if(remote.tier2Tasks)  state.tier2Tasks  = remote.tier2Tasks;
-    if(remote.tier3Tasks)  state.tier3Tasks  = remote.tier3Tasks;
-    if(remote.customTasks) state.customTasks = remote.customTasks;
-    state.updatedAt = Date.now();
-    saveLocalOnly();
-    render();
-    return;
-  }
-
-  // Same day — full merge preserving timer progress
-  const merged = mergeStates(state, remote);
-  merged.updatedAt = Date.now();
-  state = merged;
-  saveLocalOnly();
-  render();
-  if(state.tier2&&state.tier2.timerRunning&&!timerIv) runTimerIv();
+async function periodicSync(){
+  try{
+    const {data,error}=await sb.from('daily_os_state')
+      .select('state,updated_at').eq('user_id',DB_USER_ID).single();
+    if(error||!data||!data.state) return;
+    const remote=data.state;
+    const remoteTs=remote.updatedAt||0;
+    const localTs=state.updatedAt||0;
+    if(remoteTs > localTs + 2000){
+      // Remote is meaningfully newer — merge
+      const merged=mergeStates(state,remote);
+      state=merged;
+      saveLocalOnly();
+      render();
+      setSyncStatus('synced');
+    }
+  } catch(e){ /* silent */ }
 }
 
+// ── REALTIME ──
 function subscribeRealtime(){
   if(realtimeChannel) sb.removeChannel(realtimeChannel);
-  realtimeChannel=sb.channel('daily-os-sync')
+  realtimeChannel=sb.channel('daily-os-'+DB_USER_ID)
     .on('postgres_changes',{
-      event:'UPDATE', schema:'public', table:'daily_os_state',
+      event:'*', schema:'public', table:'daily_os_state',
       filter:`user_id=eq.${DB_USER_ID}`
     }, payload=>{
       const remote=payload.new&&payload.new.state;
       if(!remote) return;
-      const localTs  = state.updatedAt  || 0;
-      const remoteTs = remote.updatedAt || 0;
-      // Only apply if remote is meaningfully newer (>1s gap to avoid echo)
-      if(remoteTs > localTs + 1000){
-        applyRemoteState(remote);
+      const remoteTs=remote.updatedAt||0;
+      const localTs=state.updatedAt||0;
+      if(remoteTs > localTs + 1500){
+        // Remote is newer — merge and re-render
+        const merged=mergeStates(state,remote);
+        state=merged;
+        saveLocalOnly();
+        render();
+        if(state.tier2&&state.tier2.timerRunning&&!timerIv) runTimerIv();
         setSyncStatus('synced');
       }
     })
