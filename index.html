@@ -459,15 +459,110 @@ const sb            = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let syncDebounce    = null;
 let realtimeChannel = null;
 
-function setSyncStatus(status){ // 'syncing'|'synced'|'error'
+function setSyncStatus(status){
   const txt=status==='syncing'?'Syncing…':status==='error'?'Offline':'Synced';
   ['syncDot','syncDotMobile'].forEach(id=>{const el=document.getElementById(id);if(el)el.className='sync-dot '+status;});
   ['syncLabel','syncLabelMobile'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=txt;});
 }
 
+// Track the last remote updatedAt this device saw — used as optimistic lock
+let lastKnownRemoteTs = 0;
+
+async function fetchRemote(){
+  const {data,error}=await sb.from('daily_os_state')
+    .select('state,updated_at')
+    .eq('user_id',DB_USER_ID)
+    .single();
+  if(error&&error.code!=='PGRST116') throw error;
+  return data||null;
+}
+
+// Merge two states, keeping the most data from both.
+// Neither device's progress is discarded.
+function mergeStates(local, remote){
+  const today=todayStr();
+
+  // Always keep the fuller history (union of all keys)
+  const mergedHistory = Object.assign({}, remote.history||{}, local.history||{});
+  // For days present in both, keep the one marked completed=true
+  Object.keys(mergedHistory).forEach(d=>{
+    const l=(local.history||{})[d], r=(remote.history||{})[d];
+    if(l&&r) mergedHistory[d]={ ...r, ...l, completed: l.completed||r.completed };
+  });
+
+  // Streak: take the higher value
+  const streak = Math.max(local.streak||0, remote.streak||0);
+
+  // Task definitions: prefer local (user may have renamed/added on this device)
+  const tier2Tasks  = local.tier2Tasks  || remote.tier2Tasks;
+  const tier3Tasks  = local.tier3Tasks  || remote.tier3Tasks;
+  const customTasks = local.customTasks || remote.customTasks;
+
+  if(local.date===today && remote.date===today){
+    // Both are today — merge checkbox state: a task is done if EITHER device did it
+    const merged = Object.assign({}, remote, local);
+    merged.history     = mergedHistory;
+    merged.streak      = streak;
+    merged.tier2Tasks  = tier2Tasks;
+    merged.tier3Tasks  = tier3Tasks;
+    merged.customTasks = customTasks;
+
+    // Tier1 — union of checked fields
+    merged.tier1 = Object.assign({}, remote.tier1||{}, local.tier1||{});
+    merged.tier1.custom = Object.assign({}, (remote.tier1||{}).custom||{}, (local.tier1||{}).custom||{});
+
+    // Tier2 — union
+    merged.tier2 = Object.assign({}, remote.tier2||{}, local.tier2||{});
+    merged.tier2.custom = Object.assign({}, (remote.tier2||{}).custom||{}, (local.tier2||{}).custom||{});
+    // Timer: keep whichever has less time remaining (more progress)
+    const lRem = local.tier2&&local.tier2.timerRemaining!=null ? local.tier2.timerRemaining : TIMER_FULL;
+    const rRem = remote.tier2&&remote.tier2.timerRemaining!=null ? remote.tier2.timerRemaining : TIMER_FULL;
+    merged.tier2.timerRemaining = Math.min(lRem, rRem);
+    if(merged.tier2.timerRemaining < TIMER_FULL && merged.tier2.timerRemaining > 0){
+      // Preserve whichever running state was active
+      merged.tier2.timerRunning = local.tier2.timerRunning || remote.tier2.timerRunning;
+    }
+
+    // Tier3 — union
+    merged.tier3 = Object.assign({}, remote.tier3||{}, local.tier3||{});
+    merged.tier3.custom = Object.assign({}, (remote.tier3||{}).custom||{}, (local.tier3||{}).custom||{});
+
+    return merged;
+  }
+
+  // One or both are from a different day — keep today's fresh checkboxes,
+  // but rescue history/streak/tasks from whichever is older
+  const todayBase = local.date===today ? local : remote;
+  const oldBase   = local.date===today ? remote : local;
+  return Object.assign({}, todayBase, {
+    history:     mergedHistory,
+    streak,
+    tier2Tasks,
+    tier3Tasks,
+    customTasks
+  });
+}
+
 async function pushToSupabase(){
   setSyncStatus('syncing');
   try{
+    // Conflict check: fetch current remote ts before writing
+    const current = await fetchRemote();
+    const remoteTs = (current&&current.state&&current.state.updatedAt)||0;
+
+    if(remoteTs > lastKnownRemoteTs && remoteTs > (state.updatedAt||0)){
+      // Remote was updated by another device since we last saw it — merge first
+      console.log('Conflict detected: merging before push');
+      const merged = mergeStates(state, current.state);
+      merged.updatedAt = Date.now();
+      state = merged;
+      saveLocalOnly();
+      render();
+      lastKnownRemoteTs = merged.updatedAt;
+    } else {
+      lastKnownRemoteTs = state.updatedAt||0;
+    }
+
     const {error}=await sb.from('daily_os_state').upsert({
       user_id: DB_USER_ID,
       state: {...state, writeSecret: WRITE_SECRET},
@@ -483,26 +578,32 @@ async function pushToSupabase(){
 
 function schedulePush(){
   if(syncDebounce) clearTimeout(syncDebounce);
-  syncDebounce=setTimeout(pushToSupabase, 600);
+  syncDebounce=setTimeout(pushToSupabase, 800);
 }
 
 async function loadFromSupabase(){
   setSyncStatus('syncing');
-  // Did this device have any prior localStorage state?
   const hadLocalData = !!localStorage.getItem(STORAGE_KEY);
   try{
-    const {data,error}=await sb.from('daily_os_state')
-      .select('state,updated_at')
-      .eq('user_id',DB_USER_ID)
-      .single();
-    if(error&&error.code!=='PGRST116') throw error; // PGRST116 = no row
+    const data = await fetchRemote();
     if(data&&data.state){
       const remote=data.state;
       const localTs  = state.updatedAt  || 0;
       const remoteTs = remote.updatedAt || 0;
-      if(!hadLocalData || remoteTs > localTs){
-        // New device OR remote is genuinely newer — always apply remote
+      lastKnownRemoteTs = remoteTs;
+
+      if(!hadLocalData){
+        // Fresh device — always take remote, then push back to stamp updatedAt
         applyRemoteState(remote);
+        await pushToSupabase();
+      } else if(remoteTs > localTs){
+        // Remote is newer — merge (don't blindly overwrite)
+        const merged = mergeStates(state, remote);
+        merged.updatedAt = Date.now();
+        state = merged;
+        saveLocalOnly();
+        render();
+        await pushToSupabase();
       } else {
         // Local is newer — push up
         await pushToSupabase();
@@ -521,20 +622,25 @@ async function loadFromSupabase(){
 
 function applyRemoteState(remote){
   if(!remote||typeof remote!=='object') return;
-  // Only apply if it's the same day or we have no local data
   const today=todayStr();
-  if(remote.date&&remote.date!==today){
-    // Remote is from a different day — run through loadState logic instead
-    // Just push our current state; midnight logic will handle rollover
+
+  if(remote.date && remote.date!==today){
+    // Remote is from a previous day — rescue history/streak/tasks
+    if((remote.streak||0) >= (state.streak||0)) state.streak = remote.streak||0;
+    Object.assign(state.history, remote.history||{});
+    if(remote.tier2Tasks)  state.tier2Tasks  = remote.tier2Tasks;
+    if(remote.tier3Tasks)  state.tier3Tasks  = remote.tier3Tasks;
+    if(remote.customTasks) state.customTasks = remote.customTasks;
+    state.updatedAt = Date.now();
+    saveLocalOnly();
+    render();
     return;
   }
-  // Merge: keep timer running state from whichever has more progress
-  const localTimer=state.tier2&&state.tier2.timerRunning;
-  Object.assign(state, remote);
-  // If local timer was running and remote says it was paused, keep running
-  if(localTimer&&state.tier2&&!state.tier2.timerRunning&&state.tier2.timerEnd){
-    // Do nothing — remote already has better state
-  }
+
+  // Same day — full merge preserving timer progress
+  const merged = mergeStates(state, remote);
+  merged.updatedAt = Date.now();
+  state = merged;
   saveLocalOnly();
   render();
   if(state.tier2&&state.tier2.timerRunning&&!timerIv) runTimerIv();
@@ -643,7 +749,9 @@ function loadState(){
       history[prevDate]={completed:prevDone,ifomScore:(saved.tier1&&saved.tier1.ifomScore!=='')?parseFloat(saved.tier1.ifomScore):null,tier2:t2snap};
       const cutoff=new Date(); cutoff.setDate(cutoff.getDate()-90);
       Object.keys(history).forEach(k=>{if(new Date(k+'T12:00:00')<cutoff)delete history[k];});
-      state={date:today,...defaultDayState(),streak,history,customTasks:(saved.customTasks||[]).filter(c=>c.tier===1),tier2Tasks:saved.tier2Tasks||T2_DEFAULTS.map(t=>({...t})),tier3Tasks:saved.tier3Tasks||T3_DEFAULTS.map(t=>({...t}))};
+      state={date:today,...defaultDayState(),streak,history,customTasks:(saved.customTasks||[]).filter(c=>c.tier===1),tier2Tasks:saved.tier2Tasks||T2_DEFAULTS.map(t=>({...t})),tier3Tasks:saved.tier3Tasks||T3_DEFAULTS.map(t=>({...t})),updatedAt:Date.now()};
+      // Persist the new-day state immediately so other devices get it
+      try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){}
     } else {
       state={...defaultState(),...saved};
       state.history=state.history||{};
@@ -1182,7 +1290,7 @@ function scheduleMidnight(){
   if(midnightTmr)clearTimeout(midnightTmr);
   const now=new Date();
   const ms=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1,0,0,1)-now;
-  midnightTmr=setTimeout(()=>{if(timerIv){clearInterval(timerIv);timerIv=null;}loadState();render();scheduleMidnight();},ms);
+  midnightTmr=setTimeout(()=>{if(timerIv){clearInterval(timerIv);timerIv=null;}loadState();render();scheduleMidnight();saveState();},ms);
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeHistoryModal();});
 
