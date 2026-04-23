@@ -465,15 +465,20 @@ function setSyncStatus(status){
   ['syncLabel','syncLabelMobile'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=txt;});
 }
 
-// ── SYNC DESIGN ──
-// Last write wins for everything EXCEPT history, which is a union of all days.
-// History is the only field that is purely additive — you never want to lose a past day.
-// Everything else (checkboxes, streak, tasks, timer) follows whoever saved most recently.
-// This makes unchecking work correctly and keeps the logic simple.
+// ── SYNC — last write wins, history always unioned ──────────────────────────
+//
+// THE ONE RULE THAT PREVENTS DATA LOSS:
+//   updatedAt advances ONLY when the user does something (saveState).
+//   Loading a page NEVER pushes back to Supabase unless local has genuinely
+//   newer data. This stops the "device takes remote, pushes with now(),
+//   becomes newest, other device takes that stale state" loop.
+//
+// History is the only union: it is purely additive (past days never un-happen).
+// Everything else is last-write-wins on updatedAt.
+// ────────────────────────────────────────────────────────────────────────────
 
 function unionHistory(a, b){
   const out = Object.assign({}, a||{}, b||{});
-  // Where both have the same day, union: completed=true if either says so
   Object.keys(out).forEach(d=>{
     const la=(a||{})[d], lb=(b||{})[d];
     if(la&&lb) out[d]={ ...lb, ...la, completed:!!(la.completed||lb.completed) };
@@ -502,6 +507,23 @@ function schedulePush(){
   syncDebounce=setTimeout(pushToSupabase, 700);
 }
 
+function applyRemote(remote){
+  // Apply remote state, rescuing any local history entries remote doesn't have.
+  // Does NOT push — caller decides whether to push.
+  if(!remote||typeof remote!=='object') return;
+  const history = unionHistory(state.history, remote.history);
+  state = { ...remote, history };
+  // If remote is from yesterday, run the day-transition logic
+  if(remote.date && remote.date !== todayStr()){
+    saveLocalOnly();
+    loadState(); // handles rollover, stamps new updatedAt
+  } else {
+    saveLocalOnly();
+    render();
+    if(state.tier2&&state.tier2.timerRunning&&!timerIv) runTimerIv();
+  }
+}
+
 async function loadFromSupabase(){
   setSyncStatus('syncing');
   const hadLocalData = !!localStorage.getItem(STORAGE_KEY);
@@ -516,32 +538,33 @@ async function loadFromSupabase(){
       const remoteTs = remote.updatedAt || 0;
 
       if(!hadLocalData || remoteTs > localTs){
-        // Remote is newer (or this is a fresh device) — remote wins.
-        // But union the history so no past days are lost.
-        const savedHistory = unionHistory(state.history, remote.history);
-        state = { ...remote, history: savedHistory, updatedAt: Date.now() };
-        // If remote is from a previous day, run the day-transition logic
-        if(remote.date && remote.date !== todayStr()){
-          saveLocalOnly();
-          loadState(); // reuses the midnight rollover logic
-        } else {
-          saveLocalOnly();
-          render();
+        // ── Remote wins ──
+        // Apply remote. Check if local had history entries remote is missing.
+        const localHistorySize  = Object.keys(state.history||{}).length;
+        const remoteHistorySize = Object.keys(remote.history||{}).length;
+        applyRemote(remote);
+        // Only push if WE added history entries (day transition added yesterday's entry)
+        // or if local had more history than remote. Never push just to echo remote back.
+        const finalHistorySize = Object.keys(state.history||{}).length;
+        if(finalHistorySize > remoteHistorySize){
+          await pushToSupabase();
         }
-        // Push back so the unioned history is saved remotely too
-        await pushToSupabase();
+        // Otherwise: don't push. updatedAt stays as remote's value.
+        // Next saveState() from a user action will advance it.
       } else {
-        // Local is newer — but union history first so no past days are lost
-        const merged = unionHistory(state.history, remote.history);
-        if(Object.keys(merged).length > Object.keys(state.history||{}).length){
-          // Remote had days local didn't — update state and re-render
-          state.history = merged;
+        // ── Local wins ──
+        // Union history in case remote has days local is missing, then push.
+        const newHistory = unionHistory(state.history, remote.history);
+        const grew = Object.keys(newHistory).length > Object.keys(state.history||{}).length;
+        if(grew){
+          state.history = newHistory;
           saveLocalOnly();
           render();
         }
         await pushToSupabase();
       }
     } else {
+      // No remote row — push local
       await pushToSupabase();
     }
     setSyncStatus('synced');
@@ -558,16 +581,13 @@ async function periodicSync(){
     const {data,error}=await sb.from('daily_os_state')
       .select('state,updated_at').eq('user_id',DB_USER_ID).single();
     if(error||!data||!data.state) return;
-    const remote    = data.state;
-    const remoteTs  = remote.updatedAt || 0;
-    const localTs   = state.updatedAt  || 0;
+    const remote   = data.state;
+    const remoteTs = remote.updatedAt || 0;
+    const localTs  = state.updatedAt  || 0;
     if(remoteTs > localTs + 2000){
-      const savedHistory = unionHistory(state.history, remote.history);
-      state = { ...remote, history: savedHistory, updatedAt: Date.now() };
-      saveLocalOnly();
-      render();
-      if(state.tier2&&state.tier2.timerRunning&&!timerIv) runTimerIv();
+      applyRemote(remote);
       setSyncStatus('synced');
+      // Don't push — we just took remote
     }
   } catch(e){ /* silent */ }
 }
@@ -584,13 +604,9 @@ function subscribeRealtime(){
       const remoteTs = remote.updatedAt || 0;
       const localTs  = state.updatedAt  || 0;
       if(remoteTs > localTs + 1000){
-        // Remote is newer — apply it, preserving local history union
-        const savedHistory = unionHistory(state.history, remote.history);
-        state = { ...remote, history: savedHistory, updatedAt: remote.updatedAt };
-        saveLocalOnly();
-        render();
-        if(state.tier2&&state.tier2.timerRunning&&!timerIv) runTimerIv();
+        applyRemote(remote);
         setSyncStatus('synced');
+        // Don't push — realtime just delivered what another device wrote
       }
     })
     .subscribe();
