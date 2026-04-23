@@ -5,12 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Daily OS · Luis Ignacio Cepeda Morales</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23d97757'/><path d='M7 10l2.5 2.5L14 7' stroke='white' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/><line x1='17' y1='10' x2='26' y2='10' stroke='white' stroke-width='1.8' stroke-linecap='round'/><path d='M7 17l2.5 2.5L14 14' stroke='white' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/><line x1='17' y1='17' x2='24' y2='17' stroke='white' stroke-width='1.8' stroke-linecap='round'/><path d='M7 24l2.5 2.5L14 21' stroke='white' stroke-width='1.8' fill='none' stroke-linecap='round' stroke-linejoin='round'/><line x1='17' y1='24' x2='21' y2='24' stroke='white' stroke-width='1.8' stroke-linecap='round'/></svg>">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{overflow-x:hidden;max-width:100%;}
-body{overflow-x:hidden;max-width:100%;}
 :root{
   --bg:#f5f3ec;--surface:#faf9f5;--surface-2:#f0ede4;--surface-3:#e8e6dc;
   --t1:#141413;--t2:#3a3935;--t3:#6b6960;--t4:#b0aea5;
@@ -37,14 +34,6 @@ body{background:var(--bg);color:var(--t1);font-family:var(--sans);font-size:13px
 .hdr-stat-n{font-family:var(--serif);font-size:26px;font-weight:600;color:var(--t1);line-height:1;}
 .hdr-stat-l{font-size:9px;color:var(--t3);letter-spacing:0.12em;margin-top:2px;text-transform:uppercase;font-weight:600;}
 .hdr-actions{display:flex;gap:8px;align-items:center;}
-
-/* ── SYNC INDICATOR ── */
-.sync-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;transition:background 0.3s;}
-.sync-dot.synced{background:#788c5d;}
-.sync-dot.syncing{background:#d97757;animation:pulse 1s infinite;}
-.sync-dot.error{background:#dc2626;}
-.sync-label{font-size:9px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--t4);}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.35}}
 
 /* ── MAIN GRID ── */
 .main-content{max-width:1280px;margin:0 auto;padding:28px 24px 40px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;align-items:start;}
@@ -201,195 +190,6 @@ body{background:var(--bg);color:var(--t1);font-family:var(--sans);font-size:13px
 .unlock-pop{animation:unlockPop 0.22s ease;}
 input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;}
 input[type=number]{-moz-appearance:textfield;}
-
-/* ══════════════════════════════════════════
-   MOBILE  —  iPhone 15  (≤ 430px)
-   ══════════════════════════════════════════ */
-@media (max-width: 430px) {
-
-  /* ── Body ── */
-  body { font-size: 14px; padding-bottom: 200px; }
-
-  /* ── Header: single clean row ── */
-  .g-header {
-    height: auto;
-    flex-wrap: wrap;
-    padding: 10px 14px 8px;
-    gap: 0;
-    row-gap: 6px;
-  }
-  /* Row 1: brand (left) + streak inline (right) */
-  .hdr-brand { flex: 1; min-width: 0; }
-  .brand-meta { font-size: 8px; letter-spacing: 0.15em; }
-  .brand-name { font-size: 14px; }
-  .hdr-stats { border: none; }
-  .hdr-stat {
-    border: none !important;
-    padding: 0 0 0 10px;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: center;
-  }
-  .hdr-stat-n { font-size: 18px; }
-  .hdr-stat-l { font-size: 7px; margin-top: 1px; }
-  /* Row 2: sync dot + buttons — full width, space-between */
-  .hdr-actions {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding-bottom: 2px;
-  }
-  .hdr-actions .btn {
-    flex: 1;
-    font-size: 11px;
-    padding: 7px 8px;
-    height: 34px;
-    text-align: center;
-    justify-content: center;
-  }
-  /* Move sync indicator into the actions row on mobile */
-  .hdr-sync-mobile {
-    display: flex !important;
-    align-items: center;
-    gap: 5px;
-    margin-right: auto;
-  }
-  #syncDot { width: 6px; height: 6px; }
-  .sync-label { font-size: 8px; }
-
-  /* ── Prevent horizontal overflow ── */
-  html, body { overflow-x: hidden; width: 100%; }
-
-  /* The classic grid overflow fix: grid items default to min-width:auto
-     which lets content push them wider than their column. Setting min-width:0
-     forces them to respect the column boundary. */
-  .main-content > * { min-width: 0; width: 100%; }
-
-  /* Constrain everything inside cards to card width */
-  .tier-header-bar, .tier-body { max-width: 100%; overflow: hidden; }
-  .check-item, .lock-notice, .success-notice,
-  .partial-notice, .timer-section, .add-task-row { max-width: 100%; }
-  .check-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-  .main-content { width: 100%; box-sizing: border-box; padding: 12px 12px 20px; gap: 12px; }
-
-  /* ── Tier cards ── */
-  .tier-header-bar { padding: 11px 14px 10px; gap: 8px; }
-  .tier-badge { font-size: 8px; padding: 2px 8px; }
-  .tier-title { font-size: 14px; }
-  .tier-subtitle { font-size: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px; }
-  .tier-body { padding: 12px 12px; }
-
-  /* ── Check items ── */
-  .check-item {
-    padding: 11px 10px;
-    margin-bottom: 7px;
-    min-height: 48px;
-    gap: 10px;
-  }
-  .check-box { width: 20px; height: 20px; border-radius: 5px; flex-shrink: 0; }
-  .check-label { font-size: 14px; }
-  /* On mobile show edit/delete only — hide rename (✎), keep delete (×) */
-  .check-item .item-actions { opacity: 1; gap: 3px; }
-  .check-item .item-actions .ibtn:first-child { display: none; } /* hide ✎ rename */
-  .ibtn { padding: 4px 8px; font-size: 12px; min-height: 28px; }
-
-  /* ── Gym/Run ── */
-  .gr-hint { font-size: 11px; margin: -4px 0 7px 2px; }
-  .gr-row { gap: 6px; }
-
-  /* ── IFOM score ── */
-  .ifom-score-row { padding-left: 38px; gap: 8px; }
-  .ifom-score-input { width: 80px !important; font-size: 14px !important; padding: 6px 8px !important; }
-
-  /* ── Timer ── */
-  .timer-section { margin-top: 12px; padding-top: 12px; }
-  .timer-clock { font-size: 34px; min-width: 96px; }
-  .timer-row { gap: 14px; flex-wrap: wrap; }
-  .btn-p, .btn-g { padding: 10px 18px; font-size: 13px; min-height: 44px; }
-
-  /* ── Notices ── */
-  .lock-notice { padding: 10px 12px; gap: 8px; }
-  .lock-notice-text { font-size: 12px; }
-  .success-notice { padding: 10px 12px; }
-  .partial-notice { padding: 9px 12px; }
-  .partial-notice-text { font-size: 12px; }
-
-  /* ── Heatmap: scrollable inside its own container ── */
-  .heatmap-section { width: 100%; box-sizing: border-box; }
-  .hm-outer { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; }
-  .hm-label { width: 90px; min-width: 90px; font-size: 10px; padding-right: 6px; }
-  .hm-cell { width: 13px; height: 13px; border-radius: 2px; }
-  .hm-date-cell { width: 13px; font-size: 7px; }
-  .hm-legend { gap: 12px; flex-wrap: wrap; margin-top: 10px; }
-  .hm-legend-item { font-size: 10px; }
-
-  /* ── Rest banner ── */
-  .rest-banner { padding: 24px 16px; }
-  .rest-banner-title { font-size: 20px; }
-  .rest-banner-sub { font-size: 13px; }
-
-  /* ── Bottom bar: compact two-row fixed footer ── */
-  .bottom-bar {
-    height: auto;
-    flex-direction: column;
-    align-items: stretch;
-    padding: 8px 16px env(safe-area-inset-bottom, 10px);
-    gap: 8px;
-  }
-  .sparkline-wrap {
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-    padding-right: 0;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border);
-  }
-  .sparkline-label { font-size: 8px; white-space: nowrap; }
-  #sparklineCanvas { flex-shrink: 0; }
-  .bar-divider { display: none; }
-  .cd-group {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 0;
-  }
-  .cditem {
-    padding: 0 4px;
-    border-right: 1px solid var(--border);
-    align-items: center;
-  }
-  .cditem:last-child { border-right: none; }
-  .cd-days { font-size: 18px; }
-  .cd-label { font-size: 7px; letter-spacing: 0.06em; }
-  .cd-date { font-size: 7px; }
-
-  /* ── History modal: bottom sheet ── */
-  .overlay { padding: 0; align-items: flex-end; }
-  .modal {
-    border-radius: 18px 18px 0 0;
-    max-height: 90vh;
-    padding: 20px 16px max(24px, env(safe-area-inset-bottom));
-    max-width: 100%;
-    width: 100%;
-  }
-  .modal-title { font-size: 17px; margin-bottom: 14px; }
-  .day-pills { gap: 5px; margin-bottom: 14px; }
-  .day-pill { font-size: 11px; padding: 6px 10px; min-height: 36px; }
-  .hist-panel { padding: 12px; }
-  .hist-row { min-height: 40px; }
-  .hist-check { width: 22px; height: 22px; border-radius: 5px; }
-  .hist-label { font-size: 14px; }
-  .m-actions { flex-wrap: wrap; gap: 8px; }
-  .m-actions .btn { flex: 1; min-height: 44px; font-size: 13px; }
-  #streakResult { width: 100%; }
-
-  /* ── Add task ── */
-  .add-task-row { gap: 6px; padding-top: 10px; margin-top: 8px; }
-  .inline-input { font-size: 14px; padding: 8px 10px; min-height: 42px; }
-  .add-task-hint { padding-top: 8px; margin-top: 6px; }
-  .add-task-hint .ibtn { min-height: 36px; font-size: 12px; padding: 7px 14px; }
-}
 </style>
 </head>
 <body>
@@ -406,16 +206,8 @@ input[type=number]{-moz-appearance:textfield;}
     </div>
   </div>
   <div class="hdr-actions">
-    <div class="hdr-sync-mobile" style="display:none;">
-      <div class="sync-dot synced" id="syncDotMobile"></div>
-      <span class="sync-label" id="syncLabelMobile">Synced</span>
-    </div>
     <button class="btn btn-g" onclick="openHistoryModal()" style="font-size:10px;padding:5px 14px;height:34px;">📅 History</button>
     <button class="btn btn-g" onclick="exportJSON()" style="font-size:10px;padding:5px 14px;height:34px;">⬇ Export</button>
-  </div>
-  <div style="display:flex;align-items:center;gap:7px;padding:0 16px;" id="syncDesktop">
-    <div class="sync-dot synced" id="syncDot"></div>
-    <span class="sync-label" id="syncLabel">Synced</span>
   </div>
 </header>
 
@@ -450,168 +242,6 @@ input[type=number]{-moz-appearance:textfield;}
 </footer>
 
 <script>
-// ── SUPABASE ──
-const SUPABASE_URL  = 'https://rrkrhhrqxzyvovxbjyvn.supabase.co';
-const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJya3JoaHJxeHp5dm92eGJqeXZuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4MDk4ODgsImV4cCI6MjA5MjM4NTg4OH0.1a2XK38g7vMj55f6a955a7S9BfIoSvh-3tT7SoZRf2s';
-const DB_USER_ID    = 'licm';
-const WRITE_SECRET  = 'dos-7f3a9b2e';
-const sb            = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-let syncDebounce    = null;
-let realtimeChannel = null;
-
-function setSyncStatus(status){
-  const txt=status==='syncing'?'Syncing…':status==='error'?'Offline':'Synced';
-  ['syncDot','syncDotMobile'].forEach(id=>{const el=document.getElementById(id);if(el)el.className='sync-dot '+status;});
-  ['syncLabel','syncLabelMobile'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=txt;});
-}
-
-// ── SYNC — last write wins, history always unioned ──────────────────────────
-//
-// THE ONE RULE THAT PREVENTS DATA LOSS:
-//   updatedAt advances ONLY when the user does something (saveState).
-//   Loading a page NEVER pushes back to Supabase unless local has genuinely
-//   newer data. This stops the "device takes remote, pushes with now(),
-//   becomes newest, other device takes that stale state" loop.
-//
-// History is the only union: it is purely additive (past days never un-happen).
-// Everything else is last-write-wins on updatedAt.
-// ────────────────────────────────────────────────────────────────────────────
-
-function unionHistory(a, b){
-  const out = Object.assign({}, a||{}, b||{});
-  Object.keys(out).forEach(d=>{
-    const la=(a||{})[d], lb=(b||{})[d];
-    if(la&&lb) out[d]={ ...lb, ...la, completed:!!(la.completed||lb.completed) };
-  });
-  return out;
-}
-
-async function pushToSupabase(){
-  setSyncStatus('syncing');
-  try{
-    const {error}=await sb.from('daily_os_state').upsert({
-      user_id:    DB_USER_ID,
-      state:      {...state, writeSecret:WRITE_SECRET},
-      updated_at: new Date().toISOString()
-    },{onConflict:'user_id'});
-    if(error) throw error;
-    setSyncStatus('synced');
-  } catch(e){
-    console.error('push failed',e);
-    setSyncStatus('error');
-  }
-}
-
-function schedulePush(){
-  if(syncDebounce) clearTimeout(syncDebounce);
-  syncDebounce=setTimeout(pushToSupabase, 700);
-}
-
-function applyRemote(remote){
-  // Apply remote state, rescuing any local history entries remote doesn't have.
-  // Does NOT push — caller decides whether to push.
-  if(!remote||typeof remote!=='object') return;
-  const history = unionHistory(state.history, remote.history);
-  state = { ...remote, history };
-  // If remote is from yesterday, run the day-transition logic
-  if(remote.date && remote.date !== todayStr()){
-    saveLocalOnly();
-    loadState(); // handles rollover, stamps new updatedAt
-  } else {
-    saveLocalOnly();
-    render();
-    if(state.tier2&&state.tier2.timerRunning&&!timerIv) runTimerIv();
-  }
-}
-
-async function loadFromSupabase(){
-  setSyncStatus('syncing');
-  const hadLocalData = !!localStorage.getItem(STORAGE_KEY);
-  try{
-    const {data,error}=await sb.from('daily_os_state')
-      .select('state,updated_at').eq('user_id',DB_USER_ID).single();
-    if(error&&error.code!=='PGRST116') throw error;
-
-    if(data&&data.state){
-      const remote   = data.state;
-      const localTs  = state.updatedAt  || 0;
-      const remoteTs = remote.updatedAt || 0;
-
-      if(!hadLocalData || remoteTs > localTs){
-        // ── Remote wins ──
-        // Apply remote. Check if local had history entries remote is missing.
-        const localHistorySize  = Object.keys(state.history||{}).length;
-        const remoteHistorySize = Object.keys(remote.history||{}).length;
-        applyRemote(remote);
-        // Only push if WE added history entries (day transition added yesterday's entry)
-        // or if local had more history than remote. Never push just to echo remote back.
-        const finalHistorySize = Object.keys(state.history||{}).length;
-        if(finalHistorySize > remoteHistorySize){
-          await pushToSupabase();
-        }
-        // Otherwise: don't push. updatedAt stays as remote's value.
-        // Next saveState() from a user action will advance it.
-      } else {
-        // ── Local wins ──
-        // Union history in case remote has days local is missing, then push.
-        const newHistory = unionHistory(state.history, remote.history);
-        const grew = Object.keys(newHistory).length > Object.keys(state.history||{}).length;
-        if(grew){
-          state.history = newHistory;
-          saveLocalOnly();
-          render();
-        }
-        await pushToSupabase();
-      }
-    } else {
-      // No remote row — push local
-      await pushToSupabase();
-    }
-    setSyncStatus('synced');
-  } catch(e){
-    console.error('load failed',e);
-    setSyncStatus('error');
-  }
-  subscribeRealtime();
-  setInterval(periodicSync, 60000);
-}
-
-async function periodicSync(){
-  try{
-    const {data,error}=await sb.from('daily_os_state')
-      .select('state,updated_at').eq('user_id',DB_USER_ID).single();
-    if(error||!data||!data.state) return;
-    const remote   = data.state;
-    const remoteTs = remote.updatedAt || 0;
-    const localTs  = state.updatedAt  || 0;
-    if(remoteTs > localTs + 2000){
-      applyRemote(remote);
-      setSyncStatus('synced');
-      // Don't push — we just took remote
-    }
-  } catch(e){ /* silent */ }
-}
-
-function subscribeRealtime(){
-  if(realtimeChannel) sb.removeChannel(realtimeChannel);
-  realtimeChannel=sb.channel('daily-os-'+DB_USER_ID)
-    .on('postgres_changes',{
-      event:'*', schema:'public', table:'daily_os_state',
-      filter:`user_id=eq.${DB_USER_ID}`
-    }, payload=>{
-      const remote   = payload.new&&payload.new.state;
-      if(!remote) return;
-      const remoteTs = remote.updatedAt || 0;
-      const localTs  = state.updatedAt  || 0;
-      if(remoteTs > localTs + 1000){
-        applyRemote(remote);
-        setSyncStatus('synced');
-        // Don't push — realtime just delivered what another device wrote
-      }
-    })
-    .subscribe();
-}
-
 // ── CONSTANTS ──
 const STORAGE_KEY = 'licm_daily_os_v5';
 const TIMER_FULL  = 3600;
@@ -655,8 +285,7 @@ function defaultState(){
     streak:0,history:{},
     customTasks:[],
     tier2Tasks:T2_DEFAULTS.map(t=>({...t})),
-    tier3Tasks:T3_DEFAULTS.map(t=>({...t})),
-    updatedAt:0  // 0 = never saved locally; always defer to Supabase on first load
+    tier3Tasks:T3_DEFAULTS.map(t=>({...t}))
   };
 }
 function todayStr(){ const d=new Date(); return `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`; }
@@ -695,9 +324,7 @@ function loadState(){
       history[prevDate]={completed:prevDone,ifomScore:(saved.tier1&&saved.tier1.ifomScore!=='')?parseFloat(saved.tier1.ifomScore):null,tier2:t2snap};
       const cutoff=new Date(); cutoff.setDate(cutoff.getDate()-90);
       Object.keys(history).forEach(k=>{if(new Date(k+'T12:00:00')<cutoff)delete history[k];});
-      state={date:today,...defaultDayState(),streak,history,customTasks:(saved.customTasks||[]).filter(c=>c.tier===1),tier2Tasks:saved.tier2Tasks||T2_DEFAULTS.map(t=>({...t})),tier3Tasks:saved.tier3Tasks||T3_DEFAULTS.map(t=>({...t})),updatedAt:Date.now()};
-      // Persist the new-day state immediately so other devices get it
-      try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){}
+      state={date:today,...defaultDayState(),streak,history,customTasks:(saved.customTasks||[]).filter(c=>c.tier===1),tier2Tasks:saved.tier2Tasks||T2_DEFAULTS.map(t=>({...t})),tier3Tasks:saved.tier3Tasks||T3_DEFAULTS.map(t=>({...t}))};
     } else {
       state={...defaultState(),...saved};
       state.history=state.history||{};
@@ -715,12 +342,7 @@ function loadState(){
     }
   } catch(e){console.error('loadState',e);state=defaultState();}
 }
-function saveLocalOnly(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){console.error(e);}}
-function saveState(){
-  state.updatedAt=Date.now();
-  saveLocalOnly();
-  schedulePush();
-}
+function saveState(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(e){console.error(e);}}
 
 // ── DERIVED ──
 function dow(){ return new Date().getDay(); }
@@ -888,7 +510,7 @@ function exportJSON(){
   const data={exportedAt:new Date().toISOString(),version:5,...state};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
   const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);a.download='daily-os.json';
+  a.href=URL.createObjectURL(blob);a.download=`daily-os-${todayStr()}.json`;
   document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(a.href);
 }
 
@@ -1038,9 +660,6 @@ function recomputeStreak(){
 // ── SPARKLINE ──
 function drawSparkline(){
   const c=document.getElementById('sparklineCanvas');if(!c)return;
-  // Respect mobile CSS-resized canvas
-  const isMobile=window.innerWidth<=430;
-  if(isMobile){c.width=130;c.height=34;}else{c.width=210;c.height=48;}
   const ctx=c.getContext('2d');const W=c.width,H=c.height;ctx.clearRect(0,0,W,H);
   const pts=[];
   for(let i=13;i>=1;i--){
@@ -1236,18 +855,12 @@ function scheduleMidnight(){
   if(midnightTmr)clearTimeout(midnightTmr);
   const now=new Date();
   const ms=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1,0,0,1)-now;
-  midnightTmr=setTimeout(()=>{if(timerIv){clearInterval(timerIv);timerIv=null;}loadState();render();scheduleMidnight();saveState();},ms);
+  midnightTmr=setTimeout(()=>{if(timerIv){clearInterval(timerIv);timerIv=null;}loadState();render();scheduleMidnight();},ms);
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeHistoryModal();});
 
 // ── INIT ──
-function init(){
-  loadState();
-  render();
-  scheduleMidnight();
-  setInterval(updateCountdowns,60000);
-  loadFromSupabase(); // async — applies remote state if newer
-}
+function init(){loadState();render();scheduleMidnight();setInterval(updateCountdowns,60000);}
 init();
 </script>
 </body>
