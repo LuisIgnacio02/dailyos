@@ -531,8 +531,14 @@ async function loadFromSupabase(){
         // Push back so the unioned history is saved remotely too
         await pushToSupabase();
       } else {
-        // Local is newer — push it up, but union history first
-        state.history = unionHistory(state.history, remote.history);
+        // Local is newer — but union history first so no past days are lost
+        const merged = unionHistory(state.history, remote.history);
+        if(Object.keys(merged).length > Object.keys(state.history||{}).length){
+          // Remote had days local didn't — update state and re-render
+          state.history = merged;
+          saveLocalOnly();
+          render();
+        }
         await pushToSupabase();
       }
     } else {
