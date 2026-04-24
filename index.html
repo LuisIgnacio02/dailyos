@@ -263,8 +263,8 @@ input[type=number]{-moz-appearance:textfield;}
   <div class="cd-group">
     <div class="cditem"><div class="cd-days" id="cdRace">--</div><div class="cd-label">10K Race</div><div class="cd-date">May 30, 2026</div></div>
     <div class="cditem"><div class="cd-days" id="cdEnd">--</div><div class="cd-label">End of Rotation</div><div class="cd-date">June 20, 2026</div></div>
-    <div class="cditem"><div class="cd-days" id="cdIFOM">--</div><div class="cd-label">IFOM CSE</div><div class="cd-date">Jun 29, 2026</div></div>
-    <div class="cditem"><div class="cd-days" id="cdGrad">--</div><div class="cd-label">Graduation</div><div class="cd-date">Jul 1, 2026</div></div>
+    <div class="cditem"><div class="cd-days" id="cdIFOM">--</div><div class="cd-label">IFOM CSE</div><div class="cd-date">June 29, 2026</div></div>
+    <div class="cditem"><div class="cd-days" id="cdGrad">--</div><div class="cd-label">Graduation</div><div class="cd-date">July 1, 2026</div></div>
   </div>
 </footer>
 
@@ -390,7 +390,7 @@ const TIMER_FULL  = 3600;
 const DAYS_FULL   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const MONTHS_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const MONTHS_SH   = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const TARGETS     = { race:new Date('2026-05-30T00:00:00'), ifom:new Date('2026-06-29T00:00:00'), grad:new Date('2026-07-01T00:00:00') };
+const TARGETS     = { race:new Date('2026-05-30T00:00:00'), end:new Date('2026-06-20T00:00:00'), ifom:new Date('2026-06-29T00:00:00'), grad:new Date('2026-07-01T00:00:00') };
 const DAY_CFG     = { 0:'rest',1:'gym',2:'gym',3:'both',4:'gym',5:'both',6:'both' };
 
 // ── STATE ──
@@ -864,7 +864,7 @@ function buildHeatmapRows(){
 // ── COUNTDOWNS ──
 function updateCountdowns(){
   const now=new Date();now.setHours(0,0,0,0);
-  [['cdRace',TARGETS.race],['cdEnd',TARGETS.race],['cdIFOM',TARGETS.ifom],['cdGrad',TARGETS.grad]].forEach(([id,t])=>{
+  [['cdRace',TARGETS.race],['cdEnd',TARGETS.end],['cdIFOM',TARGETS.ifom],['cdGrad',TARGETS.grad]].forEach(([id,t])=>{
     const td=new Date(t);td.setHours(0,0,0,0);
     const el=document.getElementById(id);
     if(el)el.textContent=Math.max(0,Math.ceil((td-now)/86400000));
