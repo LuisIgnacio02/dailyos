@@ -223,8 +223,8 @@ input[type=number]{-moz-appearance:textfield;}
 
 <header class="g-header">
   <div class="hdr-brand">
-    <div class="brand-meta">Daily OS</div>
-    <div class="brand-name" id="dateDisplay">Loading...</div>
+    <div class="brand-meta" id="dateDisplay">Loading...</div>
+    <div class="brand-name">Daily OS</div>
   </div>
   <div class="hdr-stats">
     <div class="hdr-stat">
@@ -233,7 +233,7 @@ input[type=number]{-moz-appearance:textfield;}
     </div>
   </div>
   <div class="hdr-actions">
-    <button class="btn btn-g" onclick="openHistoryModal()">📅 History</button>
+    <button class="btn btn-g" onclick="openHistoryModal()">History</button>
     <button class="btn btn-g" onclick="exportJSON()">⬇ Export</button>
   </div>
 </header>
@@ -262,6 +262,7 @@ input[type=number]{-moz-appearance:textfield;}
   <div class="bar-divider"></div>
   <div class="cd-group">
     <div class="cditem"><div class="cd-days" id="cdRace">--</div><div class="cd-label">10K Race</div><div class="cd-date">May 30, 2026</div></div>
+    <div class="cditem"><div class="cd-days" id="cdEnd">--</div><div class="cd-label">End of Rotation</div><div class="cd-date">June 20, 2026</div></div>
     <div class="cditem"><div class="cd-days" id="cdIFOM">--</div><div class="cd-label">IFOM CSE</div><div class="cd-date">Jun 29, 2026</div></div>
     <div class="cditem"><div class="cd-days" id="cdGrad">--</div><div class="cd-label">Graduation</div><div class="cd-date">Jul 1, 2026</div></div>
   </div>
@@ -746,11 +747,11 @@ function saveHistoryEdit(){
   recomputeStreak();
   saveState();
   document.getElementById('streakResult').innerHTML=
-    `<span class="streak-badge">🔥 Streak recalculated: ${state.streak}</span>`;
+    `<span class="streak-badge">Streak recalculated: ${state.streak}</span>`;
   renderDayPills();
   drawSparkline();
   drawHeatmap();
-  document.getElementById('streakCount').innerHTML=(state.streak>=3?'🔥':'')+state.streak;
+  document.getElementById('streakCount').innerHTML=(state.streak>=3?'':'')+state.streak;
 }
 
 function recomputeStreak(){
@@ -863,7 +864,7 @@ function buildHeatmapRows(){
 // ── COUNTDOWNS ──
 function updateCountdowns(){
   const now=new Date();now.setHours(0,0,0,0);
-  [['cdRace',TARGETS.race],['cdIFOM',TARGETS.ifom],['cdGrad',TARGETS.grad]].forEach(([id,t])=>{
+  [['cdRace',TARGETS.race],['cdEnd',TARGETS.race],['cdIFOM',TARGETS.ifom],['cdGrad',TARGETS.grad]].forEach(([id,t])=>{
     const td=new Date(t);td.setHours(0,0,0,0);
     const el=document.getElementById(id);
     if(el)el.textContent=Math.max(0,Math.ceil((td-now)/86400000));
@@ -912,7 +913,7 @@ function renderTier1(){
   customs.forEach(c=>items+=chkT1Custom(c.id,!!(t1.custom&&t1.custom[c.id]),c.label));
   items+=addTaskArea(1);
   const congrats=done?`<div class="success-notice"><span style="font-size:16px;">✓</span><span class="success-notice-text">All essentials done. Tier 2 is unlocked.</span></div>`:'';
-  return `<div class="tier-card"><div class="tier-header-bar"><div class="tier-badge t1">Tier 1</div><div class="tier-title">Essentials</div><div class="tier-subtitle">${done?'✓ Complete':'Complete all to unlock Tier 2'}</div></div><div class="tier-body">${items}${congrats}</div></div>`;
+  return `<div class="tier-card"><div class="tier-header-bar"><div class="tier-badge t1">Tier 1</div><div class="tier-title">ESSENTIALS</div><div class="tier-subtitle">${done?'✓ Complete':'Complete all to unlock Tier 2'}</div></div><div class="tier-body">${items}${congrats}</div></div>`;
 }
 function renderTier2(unlocked){
   const t2=state.tier2,td=timerDone(),count=t2DoneCount(),total=(state.tier2Tasks||[]).length;
@@ -932,7 +933,7 @@ function renderTier2(unlocked){
     else btns=`<button class="btn btn-p" id="t2StartBtn" onclick="startTimer()">${t2.timerRemaining===TIMER_FULL?'▶ Start 60-min Focus':'▶ Resume'}</button>`;
     timerHtml=`<div class="timer-section"><div class="timer-label">Focus Timer · also unlocks Tier 3</div><div class="timer-row"><div class="timer-clock${t2.timerRunning?' running':''}${td?' done':''}" id="timerClock">${fmtTime(t2.timerRemaining)}</div><div style="display:flex;gap:12px;align-items:center;">${btns}</div></div></div>`;
   }
-  return `<div class="tier-card${!unlocked?' locked-tier':''} ${unlocked?'unlock-pop':''}"><div class="tier-header-bar"><div class="tier-badge ${unlocked?'t2':'tlock'}">${unlocked?'Tier 2':'🔒 Tier 2'}</div><div class="tier-title">Deep Work</div><div class="tier-subtitle">${unlocked?(td||count>=3?'✓ Tier 3 unlocked':'3 tasks or 60-min timer'):'Locked'}</div></div><div class="tier-body">${lockNote}${progressNote}${items}${timerHtml}</div></div>`;
+  return `<div class="tier-card${!unlocked?' locked-tier':''} ${unlocked?'unlock-pop':''}"><div class="tier-header-bar"><div class="tier-badge ${unlocked?'t2':'tlock'}">${unlocked?'Tier 2':'🔒 Tier 2'}</div><div class="tier-title">DEEP WORK</div><div class="tier-subtitle">${unlocked?(td||count>=3?'✓ Tier 3 unlocked':'3 tasks or 60-min timer'):'Locked'}</div></div><div class="tier-body">${lockNote}${progressNote}${items}${timerHtml}</div></div>`;
 }
 function renderTier3(unlocked,animate){
   const lockMsg=t2DoneCount()>=3
@@ -941,7 +942,7 @@ function renderTier3(unlocked,animate){
   const lockNote=!unlocked?`<div class="lock-notice"><div class="lock-notice-icon">🔒</div><div class="lock-notice-text"><strong>Locked.</strong> ${lockMsg}</div></div>`:'';
   let items=(state.tier3Tasks||[]).map(task=>chkEditable(task,getTaskDone(task.key,3),!unlocked,3)).join('');
   items+=addTaskArea(3);
-  return `<div class="tier-card${!unlocked?' locked-tier':''}${animate?' unlock-pop':''}"><div class="tier-header-bar"><div class="tier-badge ${unlocked?'t3':'tlock'}">${unlocked?'Tier 3':'🔒 Tier 3'}</div><div class="tier-title">Recreation</div><div class="tier-subtitle">${unlocked?'Earned.':'Locked'}</div></div><div class="tier-body">${lockNote}${items}</div></div>`;
+  return `<div class="tier-card${!unlocked?' locked-tier':''}${animate?' unlock-pop':''}"><div class="tier-header-bar"><div class="tier-badge ${unlocked?'t3':'tlock'}">${unlocked?'Tier 3':'🔒 Tier 3'}</div><div class="tier-title">RECREATION</div><div class="tier-subtitle">${unlocked?'Earned.':'Locked'}</div></div><div class="tier-body">${lockNote}${items}</div></div>`;
 }
 function renderHeatmapSection(){
   return `<div class="heatmap-section"><div class="tier-card"><div class="tier-header-bar"><div class="tier-badge t2">Tier 2</div><div class="tier-title">Deep Work Habits</div><div class="tier-subtitle">Last 30 days</div></div><div class="tier-body"><div class="hm-outer"><div class="hm-grid" id="hmGrid">${buildHeatmapRows()}</div></div><div class="hm-legend"><div class="hm-legend-item"><div class="hm-legend-cell" style="background:var(--green);"></div>Completed</div><div class="hm-legend-item"><div class="hm-legend-cell" style="background:var(--surface-3);border:1px solid var(--border);"></div>Not done</div><div class="hm-legend-item"><div class="hm-legend-cell" style="background:var(--surface-3);border:2px solid var(--accent);"></div>Today</div></div></div></div></div>`;
