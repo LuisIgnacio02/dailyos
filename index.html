@@ -502,9 +502,10 @@ function tier1DoneFor(t1,d,customTasks){
   if(cfg==='rest')return true;
   if(!t1.ifom||!t1.whatsapp)return false;
   if(cfg==='gym'&&!t1.gym)return false;
+  if(cfg==='run'&&!t1.run)return false;
   if(cfg==='both'&&!t1.gym&&!t1.run)return false;
   const customs=(customTasks||[]).filter(c=>c.tier===1);
-  if(customs.some(c=>!(t1.custom&&t1.custom[c.id])))return false;
+  if(!customs.every(c=>!!(t1.custom&&t1.custom[c.id])))return false;
   return true;
 }
 function t1Done(){ return isRest()||tier1DoneFor(state.tier1,dow(),state.customTasks); }
@@ -591,7 +592,8 @@ function tierToggle(tier,key){
   setTaskDone(key,tier,val);saveState();
   const el=document.getElementById('tk-'+key);
   if(el){el.className='check-item'+(val?' done':'');el.querySelector('.check-box').innerHTML=val?chkSvg():'';}
-  if(tier===2){drawHeatmap();reRenderTier3Unlock();}
+  drawHeatmap();
+  if(tier===2)reRenderTier3Unlock();
 }
 
 function reRenderTier3Unlock(){
@@ -797,7 +799,16 @@ function recomputeStreak(){
 // ── SPARKLINE ──
 function drawSparkline(){
   const c=document.getElementById('sparklineCanvas');if(!c)return;
-  const ctx=c.getContext('2d');const W=c.width,H=c.height;ctx.clearRect(0,0,W,H);
+  // HiDPI / retina sharpness
+  const dpr=window.devicePixelRatio||1;
+  const CW=220, CH=54;
+  c.width=CW*dpr; c.height=CH*dpr;
+  c.style.width=CW+'px'; c.style.height=CH+'px';
+  const ctx=c.getContext('2d');
+  ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,CW,CH);
+
+  // Build 14-day array
   const pts=[];
   for(let i=13;i>=1;i--){
     const d=new Date();d.setDate(d.getDate()-i);
@@ -806,44 +817,58 @@ function drawSparkline(){
     pts.push({v:(h&&h.ifomScore!=null)?h.ifomScore:null});
   }
   pts.push({v:state.tier1.ifomScore!==''?parseFloat(state.tier1.ifomScore):null});
+
   const valid=pts.filter(p=>p.v!==null);
-  if(valid.length===0){ctx.font='10px Inter,sans-serif';ctx.fillStyle='#8a8377';ctx.fillText('No scores yet',6,H/2+4);return;}
-  const pad={t:6,b:6,l:5,r:5},cW=W-pad.l-pad.r,cH=H-pad.t-pad.b;
-  const vals=valid.map(p=>p.v);let mn=Math.min(...vals),mx=Math.max(...vals);
-  if(mn===mx){mn=Math.max(0,mn-5);mx=Math.min(100,mx+5);}
+  if(valid.length===0){
+    ctx.font='700 11px Inter,sans-serif';
+    ctx.fillStyle='#8a8377';
+    ctx.textBaseline='middle';
+    ctx.fillText('No scores yet',4,CH/2);
+    return;
+  }
+
+  const n=pts.length; // 14
+  const pad={t:16,b:6,l:2,r:2};
+  const aW=CW-pad.l-pad.r;
+  const aH=CH-pad.t-pad.b;
+  const slot=aW/n;
+  const barW=Math.max(2,Math.floor(slot*0.65));
+  const vals=valid.map(p=>p.v);
+  let mn=Math.min(...vals),mx=Math.max(...vals);
+  if(mn===mx){mn=Math.max(0,mn-10);mx=Math.min(100,mx+10);}
   const rng=mx-mn||1;
-  const xOf=i=>pad.l+(i/(pts.length-1))*cW;
-  const yOf=v=>pad.t+cH-((v-mn)/rng)*cH;
-  let fi=0;for(let i=0;i<pts.length;i++){if(pts[i].v!==null){fi=i;break;}}
-  let li=pts.length-1;for(let i=pts.length-1;i>=0;i--){if(pts[i].v!==null){li=i;break;}}
-  ctx.beginPath();let started=false;
-  for(let i=0;i<pts.length;i++){
-    if(pts[i].v===null){started=false;continue;}
-    if(!started){ctx.moveTo(xOf(i),yOf(pts[i].v));started=true;}else ctx.lineTo(xOf(i),yOf(pts[i].v));
-  }
-  ctx.lineTo(xOf(li),pad.t+cH);ctx.lineTo(xOf(fi),pad.t+cH);ctx.closePath();
-  const grad=ctx.createLinearGradient(0,pad.t,0,pad.t+cH);
-  grad.addColorStop(0,'rgba(44, 82, 130, 0.2)');grad.addColorStop(1,'rgba(44, 82, 130, 0)');
-  ctx.fillStyle=grad;ctx.fill();
-  ctx.beginPath();started=false;
-  for(let i=0;i<pts.length;i++){
-    if(pts[i].v===null){started=false;continue;}
-    if(!started){ctx.moveTo(xOf(i),yOf(pts[i].v));started=true;}else ctx.lineTo(xOf(i),yOf(pts[i].v));
-  }
-  ctx.strokeStyle='#2c5282';ctx.lineWidth=2;ctx.lineJoin='round';ctx.stroke();
-  valid.forEach(p=>{
-    const i=pts.indexOf(p),isLast=i===li;
-    const x=xOf(i),y=yOf(p.v);
-    ctx.beginPath();ctx.arc(x,y,isLast?4:2.5,0,Math.PI*2);
-    ctx.fillStyle=isLast?'#b04a2a':'#2c5282';ctx.fill();
-    if(isLast){
-      ctx.strokeStyle='#fdfbf7';ctx.lineWidth=1.5;ctx.stroke();
-      ctx.font=`bold 10px 'DM Mono',monospace`;ctx.fillStyle='#b04a2a';
-      const lbl=`${Math.round(p.v)}%`,lw=ctx.measureText(lbl).width;
-      ctx.fillText(lbl,Math.min(x-lw/2,W-pad.r-lw),y>pad.t+12?y-7:y+14);
-    }
+  const barH=v=>Math.max(2,Math.round(((v-mn)/rng)*aH));
+
+  // Subtle baseline
+  ctx.fillStyle='rgba(42,37,31,0.15)';
+  ctx.fillRect(pad.l,pad.t+aH,aW,1);
+
+  // Bars
+  pts.forEach((p,i)=>{
+    if(p.v===null)return;
+    const isLast=i===n-1;
+    const bh=barH(p.v);
+    const x=pad.l+i*slot+(slot-barW)/2;
+    const y=pad.t+aH-bh;
+    ctx.fillStyle=isLast?'#b04a2a':'#c8bfaf';
+    ctx.fillRect(Math.round(x),Math.round(y),barW,bh);
   });
+
+  // Score label above last bar
+  const last=pts[n-1];
+  if(last.v!==null){
+    const bh=barH(last.v);
+    const x=pad.l+(n-1)*slot+(slot-barW)/2;
+    const y=pad.t+aH-bh;
+    ctx.font=`700 9px 'DM Mono',monospace`;
+    ctx.fillStyle='#b04a2a';
+    ctx.textBaseline='bottom';
+    ctx.textAlign='center';
+    ctx.fillText(Math.round(last.v)+'%',Math.round(x+barW/2),Math.round(y)-2);
+  }
 }
+
+
 
 // ── HEATMAP ──
 function drawHeatmap(){
@@ -924,9 +949,11 @@ function renderRestBanner(){
 function renderTier1(){
   const t1=state.tier1,cfg=DAY_CFG[dow()],done=t1Done();
   const customs=(state.customTasks||[]).filter(c=>c.tier===1);
-  let items=chkFixed('ifom',t1.ifom,'50 IFOM questions + review','t1Toggle');
+  const ifomLabel=dow()===6?'25 IFOM questions + review':'50 IFOM questions + review';
+  let items=chkFixed('ifom',t1.ifom,ifomLabel,'t1Toggle');
   if(t1.ifom)items+=`<div class="ifom-score-row"><span class="ifom-score-label">Score:</span><input type="number" class="ifom-score-input" id="ifomScoreInput" value="${t1.ifomScore}" min="0" max="100" placeholder="0–100"/><span class="ifom-score-pct">%</span></div>`;
   if(cfg==='gym')items+=chkFixed('gym',t1.gym,'Gym session','t1Toggle');
+  else if(cfg==='run')items+=chkFixed('run',t1.run,'Run','t1Toggle');
   else if(cfg==='both')items+=`<div class="gr-row">${chkFixed('gym',t1.gym,'Gym','t1Toggle')}${chkFixed('run',t1.run,'Run','t1Toggle')}</div><p class="gr-hint">Either counts · both can be marked</p>`;
   items+=chkFixed('whatsapp',t1.whatsapp,'WhatsApp cleared','t1Toggle');
   customs.forEach(c=>items+=chkT1Custom(c.id,!!(t1.custom&&t1.custom[c.id]),c.label));
