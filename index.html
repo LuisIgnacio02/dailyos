@@ -874,7 +874,7 @@ function updateCountdowns(){
 // ── RENDER ──
 function render(){
   const today=new Date(),d=dow();
-  document.getElementById('dateDisplay').textContent=`${DAYS_FULL[d]}, ${MONTHS_FULL[today.getMonth()]} ${today.getDate()}`;
+  document.getElementById('dateDisplay').textContent=`${DAYS_FULL[d]}, ${MONTHS_FULL[today.getMonth()]} ${today.getDate()}, ${today.getFullYear()}`;
   const s=state.streak;
   document.getElementById('streakCount').innerHTML=(s>=3?'':'')+s;
   const mc=document.getElementById('mainContent');
