@@ -9,6 +9,14 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
+  /* Broadsheet palette */
+  --dark:     #2a251f;
+  --light:    #f0ebdd;
+  --mid-gray: #8a8377;
+  --orange:   #b04a2a;
+  --red:      #b91c1c;
+  --gold:     #a16207;
+
   /* Surface scale */
   --bg:        #f0ebdd;
   --surface:   #fdfbf7;
@@ -75,10 +83,10 @@ body{background:var(--bg);color:var(--t1);font-family:var(--sans);font-size:13px
 .tier-card.locked-tier:hover{transform:none;box-shadow:none;border-color:var(--border);}
 .tier-header-bar{padding:14px 20px 13px;border-bottom:3px solid var(--border);display:flex;align-items:center;gap:12px;}
 .tier-badge{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 10px;border-radius:var(--rs);border:1px solid var(--border);white-space:nowrap;font-family:var(--sans);}
-.tier-badge.t1{background:var(--accent-bg);color:var(--t1);}
-.tier-badge.t2{background:var(--blue-bg);color:var(--t1);}
-.tier-badge.t3{background:var(--green-bg);color:var(--t1);}
-.tier-badge.tlock{background:var(--surface-3);color:var(--t1);}
+.tier-badge.t1{background:var(--accent-bg);color:var(--accent);border-color:var(--accent-bd);}
+.tier-badge.t2{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-bd);}
+.tier-badge.t3{background:var(--green-bg);color:var(--green);border-color:var(--green-bd);}
+.tier-badge.tlock{background:var(--surface-3);color:var(--t3);border-color:var(--border);}
 .tier-title{font-size:20px;font-weight:400;color:var(--t1);flex:1;font-family:var(--serif);font-style:italic;}
 .tier-subtitle{font-size:11px;color:var(--t2);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;font-family:var(--sans);}
 .tier-body{padding:20px;}
@@ -161,6 +169,7 @@ body{background:var(--bg);color:var(--t1);font-family:var(--sans);font-size:13px
 .hm-label{width:170px;min-width:170px;font-size:12px;font-weight:600;color:var(--t2);text-align:right;padding-right:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-family:var(--sans);}
 .hm-cell{width:20px;height:20px;border-radius:0;background:var(--surface-3);border:1px solid var(--border);flex-shrink:0;transition:background 0.15s;}
 .hm-cell.hm-done{background:var(--green);border-color:var(--border);}
+.hm-cell.hm-enrich{background:var(--blue);border-color:var(--border);}
 .hm-cell.hm-today{border:2px solid var(--accent);}
 .hm-cell.hm-done.hm-today{background:var(--green);border:2px solid var(--accent);}
 .hm-date-cell{width:20px;flex-shrink:0;font-size:9px;font-weight:700;color:var(--t3);text-align:center;line-height:1.2;font-family:var(--sans);}
@@ -352,20 +361,12 @@ const PRELOADED_JSON = {
   ],
   "tier2Tasks": [
     {
-      "key": "nonmed",
-      "label": "Non-medical reading"
-    },
-    {
       "key": "research",
       "label": "Research advancement"
     },
     {
       "key": "intl",
       "label": "International applications"
-    },
-    {
-      "key": "lang",
-      "label": "Language practice"
     },
     {
       "key": "ct1776986582075",
@@ -380,12 +381,22 @@ const PRELOADED_JSON = {
     {
       "key": "doom",
       "label": "Doomscrolling"
+    },
+    {
+      "key": "nonmed",
+      "label": "Non-medical reading",
+      "trackHeatmap": true
+    },
+    {
+      "key": "lang",
+      "label": "Language practice",
+      "trackHeatmap": true
     }
   ]
 };
 
 // ── CONSTANTS ──
-const STORAGE_KEY = 'licm_daily_os_v6'; // Bumped to v6 to automatically apply the preloaded data on first load
+const STORAGE_KEY = 'licm_daily_os_v7'; // Bumped to v6 to automatically apply the preloaded data on first load
 const TIMER_FULL  = 3600;
 const DAYS_FULL   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const MONTHS_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -441,7 +452,11 @@ function loadState(){
         else t2snap[t.key]=!!(saved.tier2&&saved.tier2.custom&&saved.tier2.custom[t.key]);
       });
       const history=saved.history||{};
-      history[prevDate]={completed:prevDone,ifomScore:(saved.tier1&&saved.tier1.ifomScore!=='')?parseFloat(saved.tier1.ifomScore):null,tier2:t2snap};
+      const t3snap={};
+      (saved.tier3Tasks||[]).filter(t=>t.trackHeatmap).forEach(t=>{
+        t3snap[t.key]=!!(saved.tier3&&(saved.tier3[t.key]||(saved.tier3.custom&&saved.tier3.custom[t.key])));
+      });
+      history[prevDate]={completed:prevDone,ifomScore:(saved.tier1&&saved.tier1.ifomScore!=='')?parseFloat(saved.tier1.ifomScore):null,tier2:t2snap,tier3:t3snap};
       const cutoff=new Date(); cutoff.setDate(cutoff.getDate()-90);
       Object.keys(history).forEach(k=>{if(new Date(k+'T12:00:00')<cutoff)delete history[k];});
       
@@ -832,14 +847,17 @@ function drawSparkline(){
 
 // ── HEATMAP ──
 function drawHeatmap(){
-  const container=document.getElementById('hmGrid');
-  if(container)container.innerHTML=buildHeatmapRows();
+  const c1=document.getElementById('hmGrid');
+  if(c1)c1.innerHTML=buildHeatmapRows('deep');
+  const c2=document.getElementById('hmGridEnrich');
+  if(c2)c2.innerHTML=buildHeatmapRows('enrich');
 }
-function buildHeatmapRows(){
+function buildHeatmapRows(group){
   const today=todayStr();
   const days=[];
   for(let i=29;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days.push(`${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`);}
-  const tasks=state.tier2Tasks||[];
+  const isEnrich=group==='enrich';
+  const tasks=isEnrich?(state.tier3Tasks||[]).filter(t=>t.trackHeatmap):(state.tier2Tasks||[]);
   let html=`<div class="hm-row"><div class="hm-label"></div>`;
   days.forEach((d,i)=>{
     const show=i===0||i===6||i===13||i===20||i===29;
@@ -852,9 +870,10 @@ function buildHeatmapRows(){
     days.forEach(d=>{
       const isToday=d===today;
       let done=false;
-      if(isToday){done=getTaskDone(task.key,2);}
-      else{const h=state.history[d];if(h&&h.tier2)done=!!h.tier2[task.key];}
-      html+=`<div class="hm-cell${done?' hm-done':''}${isToday?' hm-today':''}"></div>`;
+      if(isToday){done=getTaskDone(task.key,isEnrich?3:2);}
+      else{const h=state.history[d];if(h)done=!!(h.tier2&&h.tier2[task.key])||(h.tier3?!!h.tier3[task.key]:false);}
+      const cls=done?(isEnrich?' hm-enrich':' hm-done'):'';
+      html+=`<div class="hm-cell${cls}${isToday?' hm-today':''}"></div>`;
     });
     html+=`</div>`;
   });
@@ -945,7 +964,17 @@ function renderTier3(unlocked,animate){
   return `<div class="tier-card${!unlocked?' locked-tier':''}${animate?' unlock-pop':''}"><div class="tier-header-bar"><div class="tier-badge ${unlocked?'t3':'tlock'}">${unlocked?'Tier 3':'🔒 Tier 3'}</div><div class="tier-title">Recreation</div><div class="tier-subtitle">${unlocked?'Earned.':'Locked'}</div></div><div class="tier-body">${lockNote}${items}</div></div>`;
 }
 function renderHeatmapSection(){
-  return `<div class="heatmap-section"><div class="tier-card"><div class="tier-header-bar"><div class="tier-badge t2">Tier 2</div><div class="tier-title">Deep Work Habits</div><div class="tier-subtitle">Last 30 days</div></div><div class="tier-body"><div class="hm-outer"><div class="hm-grid" id="hmGrid">${buildHeatmapRows()}</div></div><div class="hm-legend"><div class="hm-legend-item"><div class="hm-legend-cell" style="background:var(--green);"></div>Completed</div><div class="hm-legend-item"><div class="hm-legend-cell" style="background:var(--surface-3);border:1px solid var(--border);"></div>Not done</div><div class="hm-legend-item"><div class="hm-legend-cell" style="background:var(--surface-3);border:2px solid var(--accent);"></div>Today</div></div></div></div></div>`;
+  return `<div class="heatmap-section"><div class="tier-card"><div class="tier-header-bar"><div class="tier-badge t2">Habits</div><div class="tier-title">30-Day Heatmap</div><div class="tier-subtitle">Deep work · enrichment</div></div><div class="tier-body">
+    <div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;color:var(--t3);font-family:var(--sans);margin-bottom:8px;">Deep Work</div>
+    <div class="hm-outer"><div class="hm-grid" id="hmGrid">${buildHeatmapRows('deep')}</div></div>
+    <div style="font-size:9px;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;color:var(--t3);font-family:var(--sans);margin-top:20px;margin-bottom:8px;padding-top:16px;border-top:1px dashed var(--border);">Reading &amp; Language</div>
+    <div class="hm-outer"><div class="hm-grid" id="hmGridEnrich">${buildHeatmapRows('enrich')}</div></div>
+    <div class="hm-legend">
+      <div class="hm-legend-item"><div class="hm-legend-cell" style="background:var(--green);border-color:var(--border);"></div>Deep work</div>
+      <div class="hm-legend-item"><div class="hm-legend-cell" style="background:var(--blue);border-color:var(--border);"></div>Enrichment</div>
+      <div class="hm-legend-item"><div class="hm-legend-cell" style="background:var(--surface-3);border:2px solid var(--accent);"></div>Today</div>
+    </div>
+  </div></div></div>`;
 }
 
 // ── ITEM BUILDERS ──
