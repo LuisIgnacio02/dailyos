@@ -63,11 +63,14 @@ body{background:var(--bg);color:var(--t1);font-family:var(--sans);font-size:13px
 .hdr-brand{display:flex;flex-direction:column;justify-content:center;}
 .brand-meta{font-size:10px;color:var(--t3);letter-spacing:0.15em;text-transform:uppercase;font-family:var(--sans);border-bottom:1px solid var(--border);padding-bottom:2px;margin-bottom:4px;font-weight:700;}
 .brand-name{font-family:var(--serif);font-size:32px;font-weight:400;font-style:italic;letter-spacing:-0.02em;color:var(--t1);line-height:1.1;}
-.hdr-stats{display:flex;height:100%;border-left:1px solid var(--border);border-right:1px solid var(--border);}
-.hdr-stat{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 22px;border-right:1px solid var(--border);height:100%;}
-.hdr-stat:last-child{border-right:none;}
-.hdr-stat-n{font-family:var(--serif);font-size:28px;font-weight:400;color:var(--t1);line-height:1;}
-.hdr-stat-l{font-size:9px;color:var(--t2);letter-spacing:0.1em;margin-top:4px;text-transform:uppercase;font-weight:700;font-family:var(--sans);}
+.hdr-anchor{display:flex;align-items:center;gap:14px;height:100%;border-left:1px solid var(--border);border-right:1px solid var(--border);padding:0 22px;cursor:pointer;transition:background 0.15s;user-select:none;}
+.hdr-anchor:hover{background:var(--surface);}
+.hdr-anchor-check{width:26px;height:26px;border:1.5px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.15s;}
+.hdr-anchor.done .hdr-anchor-check{background:var(--accent);border-color:var(--accent);}
+.hdr-anchor-text{display:flex;flex-direction:column;}
+.hdr-anchor-title{font-family:var(--serif);font-size:18px;font-style:italic;color:var(--t1);line-height:1.1;}
+.hdr-anchor-sub{font-size:9px;color:var(--t3);letter-spacing:0.1em;margin-top:3px;text-transform:uppercase;font-weight:700;font-family:var(--sans);}
+.hdr-anchor.done .hdr-anchor-sub{color:var(--accent);}
 .hdr-actions{display:flex;gap:12px;align-items:center;}
 
 /* ── MAIN GRID ── */
@@ -235,10 +238,11 @@ input[type=number]{-moz-appearance:textfield;}
     <div class="brand-meta" id="dateDisplay">Loading...</div>
     <div class="brand-name">Daily OS</div>
   </div>
-  <div class="hdr-stats">
-    <div class="hdr-stat">
-      <div class="hdr-stat-n" id="streakCount">0</div>
-      <div class="hdr-stat-l">Day Streak</div>
+  <div class="hdr-anchor" onclick="toggleAnchor()">
+    <div class="hdr-anchor-check" id="anchorCheck"></div>
+    <div class="hdr-anchor-text">
+      <div class="hdr-anchor-title">Anchor del día</div>
+      <div class="hdr-anchor-sub" id="anchorSub">Marcar al completar</div>
     </div>
   </div>
   <div class="hdr-actions">
@@ -284,10 +288,10 @@ const PRELOADED_JSON = {
   "version": 5,
   "date": "2026-04-24",
   "tier1": {
+    "anchor": false,
     "ifom": false,
     "ifomScore": "",
-    "gym": false,
-    "run": false,
+    "exercise": false,
     "whatsapp": false,
     "custom": {
       "ct1776986318292": false,
@@ -402,7 +406,7 @@ const DAYS_FULL   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday'
 const MONTHS_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const MONTHS_SH   = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const TARGETS     = { race:new Date('2026-05-30T00:00:00'), end:new Date('2026-06-20T00:00:00'), ifom:new Date('2026-06-29T00:00:00'), grad:new Date('2026-07-01T00:00:00') };
-const DAY_CFG     = { 0:'rest',1:'gym',2:'gym',3:'run',4:'gym',5:'both',6:'both' };
+const DAY_CFG     = { 0:'rest',1:'exercise',2:'exercise',3:'exercise',4:'exercise',5:'exercise',6:'exercise' };
 
 // ── STATE ──
 let state       = null;
@@ -462,7 +466,7 @@ function loadState(){
       
       state={
         date:today,
-        tier1:{ifom:false,ifomScore:'',gym:false,run:false,whatsapp:false,custom:{}},
+        tier1:{anchor:false,ifom:false,ifomScore:'',exercise:false,whatsapp:false,custom:{}},
         tier2:{custom:{},timerRunning:false,timerRemaining:TIMER_FULL,timerEnd:null},
         tier3:{custom:{}},
         streak,
@@ -484,6 +488,12 @@ function loadState(){
       if(!state.tier1.custom)state.tier1.custom={};
       if(!state.tier2.custom)state.tier2.custom={};
       if(!state.tier3.custom)state.tier3.custom={};
+      // Migrate legacy gym/run to exercise
+      if(state.tier1.exercise===undefined){
+        state.tier1.exercise=!!(state.tier1.gym||state.tier1.run);
+      }
+      // Initialize anchor if missing
+      if(state.tier1.anchor===undefined)state.tier1.anchor=false;
       if(state.tier2.timerRunning&&state.tier2.timerEnd){
         const rem=Math.max(0,Math.floor((state.tier2.timerEnd-Date.now())/1000));
         state.tier2.timerRemaining=rem;
@@ -501,22 +511,22 @@ function tier1DoneFor(t1,d,customTasks){
   const cfg=DAY_CFG[d];
   if(cfg==='rest')return true;
   if(!t1.ifom||!t1.whatsapp)return false;
-  if(cfg==='gym'&&!t1.gym)return false;
-  if(cfg==='run'&&!t1.run)return false;
-  if(cfg==='both'&&!t1.gym&&!t1.run)return false;
+  // exercise check: new 'exercise' field, fallback to legacy gym/run
+  const didExercise = t1.exercise || t1.gym || t1.run;
+  if(cfg==='exercise'&&!didExercise)return false;
   const customs=(customTasks||[]).filter(c=>c.tier===1);
   if(!customs.every(c=>!!(t1.custom&&t1.custom[c.id])))return false;
   return true;
 }
 function t1Done(){ return isRest()||tier1DoneFor(state.tier1,dow(),state.customTasks); }
 function timerDone(){ return state.tier2.timerRemaining<=0; }
-function t2Open(){ return isRest()||t1Done(); }
+function t2Open(){ return true; }
 
-// ── TIER 3 UNLOCK ──
+// ── TIER 3 UNLOCK (deprecated - always open) ──
 function t2DoneCount(){
   return (state.tier2Tasks||[]).filter(t=>getTaskDone(t.key,2)).length;
 }
-function t3Open(){ return isRest()||timerDone()||t2DoneCount()>=3; }
+function t3Open(){ return true; }
 
 function getTaskDone(key,tier){
   const obj=tier===2?state.tier2:state.tier3;
@@ -572,6 +582,10 @@ function updateTimerEl(){
 }
 
 // ── TIER 1 TOGGLES ──
+function toggleAnchor(){
+  state.tier1.anchor=!state.tier1.anchor;
+  saveState();render();
+}
 function t1Toggle(f){
   state.tier1[f]=!state.tier1[f];
   if(f==='ifom'&&!state.tier1.ifom)state.tier1.ifomScore='';
@@ -761,14 +775,12 @@ function saveHistoryEdit(){
     ifomScore:(scoreVal!=null&&!isNaN(scoreVal))?scoreVal:null,
     tier2:{...histDraft.tier2}
   };
-  recomputeStreak();
   saveState();
-  document.getElementById('streakResult').innerHTML=
-    `<span class="streak-badge">Streak recalculated: ${state.streak}</span>`;
+  const sr=document.getElementById('streakResult');
+  if(sr)sr.innerHTML=`<span class="streak-badge">Saved</span>`;
   renderDayPills();
   drawSparkline();
   drawHeatmap();
-  document.getElementById('streakCount').innerHTML=(state.streak>=3?'':'')+state.streak;
 }
 
 function recomputeStreak(){
@@ -919,8 +931,16 @@ function updateCountdowns(){
 function render(){
   const today=new Date(),d=dow();
   document.getElementById('dateDisplay').textContent=`${DAYS_FULL[d]}, ${MONTHS_FULL[today.getMonth()]} ${today.getDate()}, ${today.getFullYear()}`;
-  const s=state.streak;
-  document.getElementById('streakCount').innerHTML=(s>=3?'':'')+s;
+  // Anchor display
+  const anchorDone=!!state.tier1.anchor;
+  const anchorEl=document.querySelector('.hdr-anchor');
+  const anchorCheck=document.getElementById('anchorCheck');
+  const anchorSub=document.getElementById('anchorSub');
+  if(anchorEl){
+    anchorEl.classList.toggle('done',anchorDone);
+    if(anchorCheck)anchorCheck.innerHTML=anchorDone?'<svg width="14" height="12" viewBox="0 0 12 10" fill="none"><path d="M1 4.5L4.5 8L11 1" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>':'';
+    if(anchorSub)anchorSub.textContent=anchorDone?'Completado':'Marcar al completar';
+  }
   const mc=document.getElementById('mainContent');
   let html='';
   if(isRest()){
@@ -928,7 +948,7 @@ function render(){
     html+=renderRestBanner()+renderTier2(true)+renderTier3(true,false);
   } else {
     mc.className='main-content';
-    html+=renderTier1()+renderTier2(t2Open())+renderTier3(t3Open(),false);
+    html+=renderTier1()+renderTier2(true)+renderTier3(true,false);
   }
   html+=renderHeatmapSection();
   mc.innerHTML=html;
@@ -938,13 +958,12 @@ function render(){
     inp.addEventListener('click',e=>e.stopPropagation());
     inp.addEventListener('keydown',e=>e.stopPropagation());
   }
-  if(state.tier2.timerRunning&&!timerIv)runTimerIv();
-  updateTimerEl();updateCountdowns();drawSparkline();
+  updateCountdowns();drawSparkline();
 }
 
 // ── RENDER HELPERS ──
 function renderRestBanner(){
-  return `<div class="rest-banner"><div class="rest-banner-title">Rest Day 🌿</div><div class="rest-banner-sub">No essentials today. All tiers unlocked. Recover well.</div></div>`;
+  return `<div class="rest-banner"><div class="rest-banner-title">Rest Day 🌿</div><div class="rest-banner-sub">Recover well.</div></div>`;
 }
 function renderTier1(){
   const t1=state.tier1,cfg=DAY_CFG[dow()],done=t1Done();
@@ -952,43 +971,21 @@ function renderTier1(){
   const ifomLabel=dow()===6?'25 IFOM questions + review':'50 IFOM questions + review';
   let items=chkFixed('ifom',t1.ifom,ifomLabel,'t1Toggle');
   if(t1.ifom)items+=`<div class="ifom-score-row"><span class="ifom-score-label">Score:</span><input type="number" class="ifom-score-input" id="ifomScoreInput" value="${t1.ifomScore}" min="0" max="100" placeholder="0–100"/><span class="ifom-score-pct">%</span></div>`;
-  if(cfg==='gym')items+=chkFixed('gym',t1.gym,'Gym session','t1Toggle');
-  else if(cfg==='run')items+=chkFixed('run',t1.run,'Run','t1Toggle');
-  else if(cfg==='both')items+=`<div class="gr-row">${chkFixed('gym',t1.gym,'Gym','t1Toggle')}${chkFixed('run',t1.run,'Run','t1Toggle')}</div><p class="gr-hint">Either counts · both can be marked</p>`;
+  if(cfg==='exercise')items+=chkFixed('exercise',t1.exercise,'Exercise','t1Toggle');
   items+=chkFixed('whatsapp',t1.whatsapp,'WhatsApp cleared','t1Toggle');
   customs.forEach(c=>items+=chkT1Custom(c.id,!!(t1.custom&&t1.custom[c.id]),c.label));
   items+=addTaskArea(1);
-  const congrats=done?`<div class="success-notice"><span style="font-size:16px;">✓</span><span class="success-notice-text">All essentials done. Tier 2 is unlocked.</span></div>`:'';
-  return `<div class="tier-card"><div class="tier-header-bar"><div class="tier-badge t1">Tier 1</div><div class="tier-title">Essentials</div><div class="tier-subtitle">${done?'✓ Complete':'Complete all'}</div></div><div class="tier-body">${items}${congrats}</div></div>`;
+  return `<div class="tier-card"><div class="tier-header-bar"><div class="tier-badge t1">Tier 1</div><div class="tier-title">Essentials</div><div class="tier-subtitle">${done?'✓ Complete':'Daily essentials'}</div></div><div class="tier-body">${items}</div></div>`;
 }
 function renderTier2(unlocked){
-  const t2=state.tier2,td=timerDone(),count=t2DoneCount(),total=(state.tier2Tasks||[]).length;
-  const lockNote=!unlocked?`<div class="lock-notice"><div class="lock-notice-icon">🔒</div><div class="lock-notice-text"><strong>Locked.</strong> Complete all Tier 1 essentials first.</div></div>`:'';
-  let progressNote='';
-  if(unlocked&&!td&&count>0&&count<3){
-    const need=3-count;
-    progressNote=`<div class="partial-notice"><div class="partial-notice-text">🔵 ${count}/${Math.min(3,total)} tasks done — complete ${need} more to unlock Tier 3 early.</div></div>`;
-  }
-  let items=(state.tier2Tasks||[]).map(task=>chkEditable(task,getTaskDone(task.key,2),!unlocked,2)).join('');
+  let items=(state.tier2Tasks||[]).map(task=>chkEditable(task,getTaskDone(task.key,2),false,2)).join('');
   items+=addTaskArea(2);
-  let timerHtml='';
-  if(unlocked){
-    let btns='';
-    if(td)btns=`<span style="font-size:13px;font-weight:700;color:var(--green);font-family:var(--sans);">✓ Tier 3 unlocked</span>`;
-    else if(t2.timerRunning)btns=`<button class="btn btn-g" id="t2PauseBtn" onclick="pauseTimer()">⏸ Pause</button>`;
-    else btns=`<button class="btn btn-p" id="t2StartBtn" onclick="startTimer()">${t2.timerRemaining===TIMER_FULL?'▶ Start 60-min Focus':'▶ Resume'}</button>`;
-    timerHtml=`<div class="timer-section"><div class="timer-label">Focus Timer · also unlocks Tier 3</div><div class="timer-row"><div class="timer-clock${t2.timerRunning?' running':''}${td?' done':''}" id="timerClock">${fmtTime(t2.timerRemaining)}</div><div style="display:flex;gap:12px;align-items:center;">${btns}</div></div></div>`;
-  }
-  return `<div class="tier-card${!unlocked?' locked-tier':''} ${unlocked?'unlock-pop':''}"><div class="tier-header-bar"><div class="tier-badge ${unlocked?'t2':'tlock'}">${unlocked?'Tier 2':'🔒 Tier 2'}</div><div class="tier-title">Deep work</div><div class="tier-subtitle">${unlocked?(td||count>=3?'✓ Tier 3 unlocked':'3 tasks or 60-min timer'):'Locked'}</div></div><div class="tier-body">${lockNote}${progressNote}${items}${timerHtml}</div></div>`;
+  return `<div class="tier-card"><div class="tier-header-bar"><div class="tier-badge t2">Tier 2</div><div class="tier-title">Deep work</div><div class="tier-subtitle">Cuando tenga energía</div></div><div class="tier-body">${items}</div></div>`;
 }
 function renderTier3(unlocked,animate){
-  const lockMsg=t2DoneCount()>=3
-    ?'Let the Tier 2 focus timer reach zero, or complete 3 tasks.'
-    :'Complete 3 Tier 2 tasks, or let the focus timer reach zero.';
-  const lockNote=!unlocked?`<div class="lock-notice"><div class="lock-notice-icon">🔒</div><div class="lock-notice-text"><strong>Locked.</strong> ${lockMsg}</div></div>`:'';
-  let items=(state.tier3Tasks||[]).map(task=>chkEditable(task,getTaskDone(task.key,3),!unlocked,3)).join('');
+  let items=(state.tier3Tasks||[]).map(task=>chkEditable(task,getTaskDone(task.key,3),false,3)).join('');
   items+=addTaskArea(3);
-  return `<div class="tier-card${!unlocked?' locked-tier':''}${animate?' unlock-pop':''}"><div class="tier-header-bar"><div class="tier-badge ${unlocked?'t3':'tlock'}">${unlocked?'Tier 3':'🔒 Tier 3'}</div><div class="tier-title">Recreation</div><div class="tier-subtitle">${unlocked?'Earned.':'Locked'}</div></div><div class="tier-body">${lockNote}${items}</div></div>`;
+  return `<div class="tier-card"><div class="tier-header-bar"><div class="tier-badge t3">Tier 3</div><div class="tier-title">Recreation</div><div class="tier-subtitle">Parte de un día balanceado</div></div><div class="tier-body">${items}</div></div>`;
 }
 function renderHeatmapSection(){
   return `<div class="heatmap-section"><div class="tier-card"><div class="tier-header-bar"><div class="tier-badge t2">Habits</div><div class="tier-title">30-Day Heatmap</div><div class="tier-subtitle">Deep work · enrichment</div></div><div class="tier-body">
