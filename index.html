@@ -943,13 +943,8 @@ function render(){
   }
   const mc=document.getElementById('mainContent');
   let html='';
-  if(isRest()){
-    mc.className='main-content rest-layout';
-    html+=renderRestBanner()+renderTier2(true)+renderTier3(true,false);
-  } else {
-    mc.className='main-content';
-    html+=renderTier1()+renderTier2(true)+renderTier3(true,false);
-  }
+  mc.className='main-content';
+  html+=renderTier1()+renderTier2(true)+renderTier3(true,false);
   html+=renderHeatmapSection();
   mc.innerHTML=html;
   const inp=document.getElementById('ifomScoreInput');
@@ -968,10 +963,11 @@ function renderRestBanner(){
 function renderTier1(){
   const t1=state.tier1,cfg=DAY_CFG[dow()],done=t1Done();
   const customs=(state.customTasks||[]).filter(c=>c.tier===1);
-  const ifomLabel=dow()===6?'25 IFOM questions + review':'50 IFOM questions + review';
+  const rest=isRest();
+  const ifomLabel=rest?'IFOM study':dow()===6?'25 IFOM questions + review':'50 IFOM questions + review';
   let items=chkFixed('ifom',t1.ifom,ifomLabel,'t1Toggle');
   if(t1.ifom)items+=`<div class="ifom-score-row"><span class="ifom-score-label">Score:</span><input type="number" class="ifom-score-input" id="ifomScoreInput" value="${t1.ifomScore}" min="0" max="100" placeholder="0–100"/><span class="ifom-score-pct">%</span></div>`;
-  if(cfg==='exercise')items+=chkFixed('exercise',t1.exercise,'Exercise','t1Toggle');
+  items+=chkFixed('exercise',t1.exercise,rest?'Rest':'Exercise','t1Toggle');
   items+=chkFixed('whatsapp',t1.whatsapp,'WhatsApp cleared','t1Toggle');
   customs.forEach(c=>items+=chkT1Custom(c.id,!!(t1.custom&&t1.custom[c.id]),c.label));
   items+=addTaskArea(1);
