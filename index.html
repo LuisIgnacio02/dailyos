@@ -181,12 +181,8 @@ body{background:var(--bg);color:var(--t1);font-family:var(--sans);font-size:13px
 .hm-legend-cell{width:14px;height:14px;border-radius:0;border:1px solid var(--border);flex-shrink:0;}
 
 /* ── BOTTOM BAR ── */
-.bottom-bar{position:fixed;bottom:0;left:0;right:0;height:95px;background:var(--bg);border-top:3px solid var(--border);display:flex;align-items:center;padding:0 32px;z-index:100;}
-.sparkline-wrap{display:flex;flex-direction:column;gap:6px;padding-right:32px;}
-.sparkline-label{font-size:10px;color:var(--t1);letter-spacing:0.1em;text-transform:uppercase;font-weight:700;font-family:var(--sans);}
-#sparklineCanvas{display:block;}
-.bar-divider{width:1px;height:50px;background:var(--border);flex-shrink:0;margin-right:32px;}
-.cd-group{display:flex;flex:1;justify-content:space-around;align-items:center;}
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;height:95px;background:var(--bg);border-top:3px solid var(--border);display:flex;align-items:center;justify-content:center;padding:0 32px;z-index:100;}
+.cd-group{display:flex;justify-content:center;align-items:center;gap:0;}
 .cditem{display:flex;flex-direction:column;align-items:center;gap:2px;padding:0 24px;border-right:1px solid var(--border);}
 .cditem:last-child{border-right:none;}
 .cd-days{font-family:var(--serif);font-size:28px;font-weight:400;color:var(--t1);line-height:1;}
@@ -268,13 +264,7 @@ input[type=number]{-moz-appearance:textfield;}
 </div>
 
 <footer class="bottom-bar">
-  <div class="sparkline-wrap">
-    <div class="sparkline-label">IFOM Trend (14d)</div>
-    <canvas id="sparklineCanvas" width="210" height="48"></canvas>
-  </div>
-  <div class="bar-divider"></div>
   <div class="cd-group">
-    <div class="cditem"><div class="cd-days" id="cdRace">--</div><div class="cd-label">10K Race</div><div class="cd-date">May 30, 2026</div></div>
     <div class="cditem"><div class="cd-days" id="cdEnd">--</div><div class="cd-label">End of Rotation</div><div class="cd-date">June 20, 2026</div></div>
     <div class="cditem"><div class="cd-days" id="cdIFOM">--</div><div class="cd-label">IFOM CSE</div><div class="cd-date">June 29, 2026</div></div>
     <div class="cditem"><div class="cd-days" id="cdGrad">--</div><div class="cd-label">Graduation</div><div class="cd-date">July 1, 2026</div></div>
@@ -405,7 +395,7 @@ const TIMER_FULL  = 3600;
 const DAYS_FULL   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const MONTHS_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const MONTHS_SH   = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const TARGETS     = { race:new Date('2026-05-30T00:00:00'), end:new Date('2026-06-20T00:00:00'), ifom:new Date('2026-06-29T00:00:00'), grad:new Date('2026-07-01T00:00:00') };
+const TARGETS     = { end:new Date('2026-06-20T00:00:00'), ifom:new Date('2026-06-29T00:00:00'), grad:new Date('2026-07-01T00:00:00') };
 const DAY_CFG     = { 0:'rest',1:'exercise',2:'exercise',3:'exercise',4:'exercise',5:'exercise',6:'exercise' };
 
 // ── STATE ──
@@ -659,7 +649,7 @@ function confirmAdd(){
     state.tier2.custom[key]=false;
   } else if(addTaskTier===3){
     if(!state.tier3Tasks)state.tier3Tasks=[];
-    state.tier3Tasks.push({key,label});
+    state.tier3Tasks.push({key,label,trackHeatmap:true});
     if(!state.tier3.custom)state.tier3.custom={};
     state.tier3.custom[key]=false;
   }
@@ -711,10 +701,14 @@ function selectHistDay(ds){
   histDraft={
     completed: existing.completed||false,
     ifomScore: existing.ifomScore!=null ? String(existing.ifomScore) : '',
-    tier2: {}
+    tier2: {},
+    tier3: {}
   };
   (state.tier2Tasks||[]).forEach(t=>{
     histDraft.tier2[t.key]=(existing.tier2&&existing.tier2[t.key])?true:false;
+  });
+  (state.tier3Tasks||[]).forEach(t=>{
+    histDraft.tier3[t.key]=(existing.tier3&&existing.tier3[t.key])?true:false;
   });
   renderDayPills();
   renderHistPanel();
@@ -752,6 +746,18 @@ function renderHistPanel(){
       <div class="hist-label">${t.label}</div>
     </div>`;
   });
+  if((state.tier3Tasks||[]).length>0){
+    html+=`<div class="hist-t2-label" style="margin-top:16px;">Tier 3 — Recreation tasks</div>`;
+    (state.tier3Tasks||[]).forEach(t=>{
+      const done=!!histDraft.tier3[t.key];
+      html+=`<div class="hist-row">
+        <div class="hist-check ${done?'on':''}" id="histT3-${t.key}" onclick="histToggleT3('${t.key}')">
+          ${done?chkSvg():''}
+        </div>
+        <div class="hist-label">${t.label}</div>
+      </div>`;
+    });
+  }
   html+=`</div>`;
   document.getElementById('histEditPanel').innerHTML=html;
 }
@@ -766,6 +772,11 @@ function histToggleT2(key){
   const el=document.getElementById('histT2-'+key);
   if(el){el.className='hist-check'+(histDraft.tier2[key]?' on':'');el.innerHTML=histDraft.tier2[key]?chkSvg():'';}
 }
+function histToggleT3(key){
+  histDraft.tier3[key]=!histDraft.tier3[key];
+  const el=document.getElementById('histT3-'+key);
+  if(el){el.className='hist-check'+(histDraft.tier3[key]?' on':'');el.innerHTML=histDraft.tier3[key]?chkSvg():'';}
+}
 
 function saveHistoryEdit(){
   if(!histSelectedDate||!histDraft)return;
@@ -773,7 +784,8 @@ function saveHistoryEdit(){
   state.history[histSelectedDate]={
     completed:histDraft.completed,
     ifomScore:(scoreVal!=null&&!isNaN(scoreVal))?scoreVal:null,
-    tier2:{...histDraft.tier2}
+    tier2:{...histDraft.tier2},
+    tier3:{...histDraft.tier3}
   };
   saveState();
   const sr=document.getElementById('streakResult');
@@ -920,7 +932,7 @@ function buildHeatmapRows(group){
 // ── COUNTDOWNS ──
 function updateCountdowns(){
   const now=new Date();now.setHours(0,0,0,0);
-  [['cdRace',TARGETS.race],['cdEnd',TARGETS.end],['cdIFOM',TARGETS.ifom],['cdGrad',TARGETS.grad]].forEach(([id,t])=>{
+  [['cdEnd',TARGETS.end],['cdIFOM',TARGETS.ifom],['cdGrad',TARGETS.grad]].forEach(([id,t])=>{
     const td=new Date(t);td.setHours(0,0,0,0);
     const el=document.getElementById(id);
     if(el)el.textContent=Math.max(0,Math.ceil((td-now)/86400000));
@@ -953,7 +965,7 @@ function render(){
     inp.addEventListener('click',e=>e.stopPropagation());
     inp.addEventListener('keydown',e=>e.stopPropagation());
   }
-  updateCountdowns();drawSparkline();
+  updateCountdowns();
 }
 
 // ── RENDER HELPERS ──
